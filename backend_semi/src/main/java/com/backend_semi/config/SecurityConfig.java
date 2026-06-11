@@ -28,6 +28,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/members/signup").permitAll()
                         .requestMatchers("/api/members/login").permitAll()
+
+                        // 관리자 API는 ADMIN 권한을 가진 사용자만 접근 가능
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
                         .anyRequest().permitAll())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -87,4 +87,9 @@ public class Member {
         this.phone = phone;
         this.birthDate = birthDate;
     }
+
+    //회원 권한 변경
+    public void changeRole(Role role){
+        this.role = role;
+    }
 }
