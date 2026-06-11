@@ -30,6 +30,9 @@ function NoticeContents({ user }: AppRoutesProps) {
     INITIAL_NOTICE_FORM_DATA
   );
 
+  // 선택한 파일 객체 (아직 안 올림, 제출 때 같이 보냄)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   useEffect(() => {
     fetchNotices();
   }, []);
@@ -53,8 +56,8 @@ function NoticeContents({ user }: AppRoutesProps) {
     selectedCategoryId === null
       ? notices
       : notices.filter(
-          (notice) => notice.noticeCategoryId === selectedCategoryId
-        );
+        (notice) => notice.noticeCategoryId === selectedCategoryId
+      );
 
   const handleCreateClick = () => {
     setFormMode("create");
@@ -100,6 +103,13 @@ function NoticeContents({ user }: AppRoutesProps) {
     });
   };
 
+  // 파일 선택 핸들러
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    setSelectedFile(file);
+  };
+
+  // 수정 (JSON 대신 FormData로. 공지 데이터는 data 파트에 JSON Blob으로, 파일은 file 파트로)
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -107,43 +117,52 @@ function NoticeContents({ user }: AppRoutesProps) {
       alert("제목을 입력해 주세요.");
       return;
     }
-
     if (!formData.contents.trim()) {
       alert("내용을 입력해 주세요.");
       return;
     }
 
-    const requestBody = {
+    // 공지 데이터 (attachmentUrl은 백엔드가 파일 보고 채우므로 안 넣어도 됨)
+    const noticeData = {
       noticeCategoryId: formData.noticeCategoryId,
       title: formData.title,
       contents: formData.contents,
+      // 수정 시 기존 첨부 유지용으로 현재 값 함께 보냄
       attachmentUrl:
-        formData.attachmentUrl.trim() === "" ? null : formData.attachmentUrl,
+        formData.attachmentUrl?.trim() === "" ? null : formData.attachmentUrl,
     };
+
+    // multipart 조립
+    const body = new FormData();
+    // 공지 데이터는 JSON 문자열을 Blob(application/json)으로 — @RequestPart("data")와 매칭
+    body.append(
+      "data",
+      new Blob([JSON.stringify(noticeData)], { type: "application/json" })
+    );
+    // 파일이 선택됐으면 추가 (@RequestPart("file")과 매칭)
+    if (selectedFile) {
+      body.append("file", selectedFile);
+    }
 
     try {
       if (formMode === "create") {
-        await customAxios.post("/api/notices", requestBody);
+        // Content-Type 헤더는 직접 지정하지 말 것! (axios가 boundary 포함해 자동 설정)
+        await customAxios.post("/api/notices", body);
 
         setFormMode("none");
         setEditingNotice(null);
-
+        setSelectedFile(null);
         await fetchNotices();
-
         alert("공지사항이 등록되었습니다.");
       }
 
       if (formMode === "edit" && editingNotice) {
-        await customAxios.put(
-          `/api/notices/${editingNotice.noticeId}`,
-          requestBody
-        );
+        await customAxios.put(`/api/notices/${editingNotice.noticeId}`, body);
 
         alert("공지사항이 수정되었습니다.");
-
         setFormMode("none");
         setEditingNotice(null);
-
+        setSelectedFile(null);
         await fetchNotices();
       }
     } catch (error) {
@@ -273,10 +292,9 @@ function NoticeContents({ user }: AppRoutesProps) {
                     <a
                       className="notice-item-attachment"
                       href={notice.attachmentUrl}
-                      target="_blank"
-                      rel="noreferrer"
+                      download
                     >
-                      첨부파일 열기
+                      첨부파일 다운로드
                     </a>
                   )}
                 </article>
@@ -332,15 +350,23 @@ function NoticeContents({ user }: AppRoutesProps) {
                 </label>
 
                 <label>
-                  첨부파일 URL
-                  <input
-                    type="text"
-                    name="attachmentUrl"
-                    value={formData.attachmentUrl}
-                    onChange={handleChange}
-                    placeholder="첨부파일 URL을 입력하세요."
-                  />
+                  첨부파일
+                  <input type="file" onChange={handleFileChange} />
                 </label>
+
+                {selectedFile && (
+                  <p className="notice-upload-hint">선택됨: {selectedFile.name}</p>
+                )}
+
+                {/* 수정 모드일 때 기존 첨부파일 표시 */}
+                {formMode === "edit" && formData.attachmentUrl && !selectedFile && (
+                  <p className="notice-upload-hint">
+                    현재 첨부:{" "}
+                    <a href={formData.attachmentUrl} target="_blank" rel="noreferrer">
+                      파일 열기
+                    </a>
+                  </p>
+                )}
 
                 <div className="notice-form-button-row">
                   <button

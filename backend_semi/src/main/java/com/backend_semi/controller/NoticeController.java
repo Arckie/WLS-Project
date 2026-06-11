@@ -4,11 +4,13 @@ import com.backend_semi.dto.NoticeRequestDto;
 import com.backend_semi.dto.NoticeResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.backend_semi.service.NoticeService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,13 +23,17 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     // 공지사항 등록
-    @PostMapping
+    // consumes 명시: multipart로 받음 (데이터 + 파일)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> createNotice(
             Authentication authentication,
-            @RequestBody NoticeRequestDto request
+            // 공지 데이터(JSON 문자열) — 프론트가 "data"라는 파트로 보냄
+            @RequestPart("data") NoticeRequestDto request,
+            // 첨부파일 — 없을 수도 있으니 required = false
+            @RequestPart(value = "file", required = false) MultipartFile file
     ) {
         String loginId = (String) authentication.getDetails();
-        Long noticeId = noticeService.createNotice(loginId, request);
+        Long noticeId = noticeService.createNotice(loginId, request, file);
         return ResponseEntity.ok(noticeId);
     }
 
@@ -64,16 +70,15 @@ public class NoticeController {
     }
 
     // 공지사항 수정
-    @PutMapping("/{noticeId}")
+    @PutMapping(value = "/{noticeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateNotice(
-            Authentication autehntication,
+            Authentication authentication,
             @PathVariable Long noticeId,
-            @RequestBody NoticeRequestDto request
+            @RequestPart("data") NoticeRequestDto request,
+            @RequestPart(value = "file", required = false) MultipartFile file
     ){
-        String loginId = (String) autehntication.getDetails();
-
-        noticeService.updateNotice(loginId, noticeId, request);
-
+        String loginId = (String) authentication.getDetails();
+        noticeService.updateNotice(loginId, noticeId, request, file);
         return ResponseEntity.ok().build();
     }
 
