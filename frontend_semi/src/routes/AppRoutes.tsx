@@ -17,6 +17,8 @@ import Introduce from "../pages/Introduce";
 import NoticeContents from "../pages/NoticeContents";
 import type { User } from "../types/User";
 import HowToUse from "../pages/HowToUse";
+import AdminPage from "../pages/AdminPage.tsx";
+
 
 interface AppProps {
     user: User | null;
@@ -50,6 +52,7 @@ function AppRoutes({ user, handleLoginSuccess, handleLogout }: AppProps) {
                     <Route path="/members/mypage" element={<Navigate to="/api/members/mypage" replace />} />
                     <Route path="/members/mypage/favorite" element={<FavoritePage />}/>
                     <Route path="/members/mypage/learning" element={<LearningPage />}/>
+                    <Route path="/members/mypage/adminpage" element={<AdminPage />}/>
                     <Route path="/api/lecture/list" element={<LecturePage user={user} />}/>
                     <Route path="/lecture/list" element={<Navigate to="/api/lecture/list" replace />} />
                     <Route path="/api/lecture/insert" element={<LectureInsertForm user={user} />}/>
