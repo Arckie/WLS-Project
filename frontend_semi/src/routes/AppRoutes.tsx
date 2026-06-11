@@ -23,6 +23,7 @@ interface AppProps {
     handleLoginSuccess: (userData: User) => void;
     handleLogout: (event: React.MouseEvent<HTMLElement>) => void;
 }
+// TEST
 
 function AppRoutes({ user, handleLoginSuccess, handleLogout }: AppProps) {
     return (
