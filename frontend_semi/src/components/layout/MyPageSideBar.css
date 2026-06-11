@@ -196,6 +196,8 @@
   filter: drop-shadow(0 16px 22px rgba(0, 40, 120, 0.18));
 }
 
+
+
 @media (max-width: 900px) {
   .mypage-sidebar {
     position: relative;

@@ -127,6 +127,7 @@ function LectureUpdateForm({ user }: LectureUpdateFormProps) {
   return (
     <LectureEditorForm
       title="강의 수정"
+      description="기존 강의 정보를 수정합니다."
       lecture={lecture}
       errors={errors}
       categories={categories}
@@ -134,6 +135,7 @@ function LectureUpdateForm({ user }: LectureUpdateFormProps) {
       onCategoryChange={handleCategoryChange}
       onFieldChange={handleFieldChange}
       onSubmit={handleSubmit}
+      onCancel={() => navigate("/api/lecture/list")}
     />
   );
 }

@@ -97,9 +97,17 @@
 			<version>0.12.6</version>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- AWS S3 SDK v2 (파일을 S3에 업로드/삭제) -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.46.5</version>
+		</dependency>
 	</dependencies>
 
 	<build>
+		<finalName>project_test</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

@@ -15,7 +15,9 @@ type LectureEditorFormProps = {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => void;
-  onSubmit: (event: React.SyntheticEvent<HTMLFormElement>) => void;
+  onSubmit: (
+    event: React.SyntheticEvent<HTMLFormElement>
+  ) => void | Promise<void>;
   onCancel: () => void;
 };
 

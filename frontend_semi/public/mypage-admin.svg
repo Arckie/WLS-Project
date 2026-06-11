@@ -1,0 +1,57 @@
+<svg width="180" height="170" viewBox="0 0 180 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+    <!-- 톱니 -->
+    <circle cx="122" cy="44" r="14"
+            fill="white"
+            fill-opacity="0.18"/>
+
+    <circle cx="122" cy="44" r="4"
+            fill="white"
+            fill-opacity="0.85"/>
+
+    <!-- 방패 -->
+    <path
+            d="M90 32
+         L126 46
+         V78
+         C126 107 108 129 90 140
+         C72 129 54 107 54 78
+         V46
+         L90 32Z"
+            fill="white"
+            fill-opacity="0.22"/>
+
+    <!-- 내부 방패 -->
+    <path
+            d="M90 46
+         L115 56
+         V78
+         C115 98 103 112 90 120
+         C77 112 65 98 65 78
+         V56
+         L90 46Z"
+            fill="white"
+            fill-opacity="0.95"/>
+
+    <!-- 체크 -->
+    <path
+            d="M80 79L89 88L105 71"
+            stroke="#2F6FF2"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-linejoin="round"/>
+
+    <!-- ADMIN -->
+    <text
+            x="90"
+            y="144"
+            text-anchor="middle"
+            fill="white"
+            fill-opacity="0.72"
+            font-family="Arial, sans-serif"
+            font-size="16"
+            font-weight="800">
+        ADMIN
+    </text>
+
+</svg>
