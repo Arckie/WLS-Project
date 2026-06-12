@@ -3,7 +3,13 @@ import { LEARNING_PROFILE_OPTIONS } from "../constants/memberProfile";
 import { useMyPage } from "../hooks/useMyPage";
 import "./MyPage.css";
 
-function MyPage() {
+// 컴포넌트 props 타입 추가
+type AppRoutesProps = {
+    handleLogout: (event?: React.MouseEvent<HTMLElement>) => void;
+};
+
+
+function MyPage({ handleLogout }: AppRoutesProps) {
     /*
       useMyPage는 마이페이지에서 필요한 상태와 이벤트 함수를 모아둔 커스텀 훅입니다.
       이 파일(MyPage.tsx)은 화면을 그리는 역할에 집중하고,
@@ -32,7 +38,7 @@ function MyPage() {
         handleLearningProfileChange,
         handleMemberInfoUpdate,
         handleMemberSignOff,
-    } = useMyPage();
+    } = useMyPage(handleLogout);
 
     // 회원 정보를 아직 서버에서 가져오는 중이면, 실제 폼 대신 로딩 문구를 먼저 보여줍니다.
     if (loading) {

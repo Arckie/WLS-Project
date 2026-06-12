@@ -40,24 +40,6 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/token-test")
-    public ResponseEntity<?> tokenTest(@RequestHeader("Authorization") String authorizationHeader){
-
-        String token = authorizationHeader.replace("Bearer ", "");
-
-        Claims claims = jwtUtil.parseToken(token);
-
-        Long memberId = Long.valueOf(claims.getSubject());
-        String loginId = claims.get("loginId", String.class);
-        String name = claims.get("name", String.class);
-
-        return ResponseEntity.ok(
-                "토큰 검증 성공 / memberId = " + memberId
-                        +", loginId = " + loginId
-                        +", name = " + name
-        );
-    }
-
     @GetMapping("/mypage")
     public ResponseEntity<MemberInfoResponseDto> getMyInfo(){
         Authentication authenticaton  = SecurityContextHolder.getContext().getAuthentication();
@@ -104,16 +86,6 @@ public class MemberController {
         String loginId = (String) authentication.getDetails();
         memberService.deleteMember(loginId);
 
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/mypage")
-    public ResponseEntity<Void> updateMemberInfo(
-            Authentication authentocatiion,
-            @RequestBody MemberUpdateRequestDto request
-    ){
-        String loginId = (String) authentocatiion.getDetails();
-        //  memberService.updateMemberInfo(loginid, request);
         return ResponseEntity.ok().build();
     }
 

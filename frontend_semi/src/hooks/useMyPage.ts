@@ -37,7 +37,9 @@ function toMemberUpdateForm(memberInfo: MemberInfo): MemberUpdateForm {
   };
 }
 
-export function useMyPage() {
+export function useMyPage(
+  handleLogout: (event?: React.MouseEvent<HTMLElement>) => void
+) {
   const [memberInfo, setMemberInfo] = useState<MemberInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -72,14 +74,6 @@ export function useMyPage() {
   };
 
   const getMemberInfo = async () => {
-    const token = localStorage.getItem("accessToken");
-
-    if(!token){
-      setLoading(false);
-      return;
-
-    }
-
     try {
       const response = await customAxios.get("/api/members/mypage");
       const data = toMemberInfo(response.data);
@@ -266,13 +260,13 @@ export function useMyPage() {
         email: memberUpdateForm.email,
         phone: memberUpdateForm.phone,
         birthDate: memberUpdateForm.birthDate,
-        memberLearningProfiles: memberUpdateForm.memberLearningProfiles,
+        learningProfile: memberUpdateForm.memberLearningProfiles,
         ...(hasPasswordInput()
           ? {
-              currentPassword,
-              newPassword: memberPassword,
-              newPasswordConfirm: memberPasswordConfirm,
-            }
+            currentPassword,
+            newPassword: memberPassword,
+            newPasswordConfirm: memberPasswordConfirm,
+          }
           : {}),
       };
 
@@ -314,14 +308,10 @@ export function useMyPage() {
       await customAxios.delete("/api/members/signoff");
 
       sessionStorage.setItem("memberSignOffAt", String(Date.now()));
-      localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      localStorage.removeItem("user");
-      localStorage.removeItem("role");
 
+      handleLogout();
       alert("회원탈퇴가 완료되었습니다.");
-
-      window.location.replace("/api/members/login");
     } catch (error) {
       console.error("회원탈퇴 실패:", error);
       alert("회원탈퇴에 실패했습니다.");

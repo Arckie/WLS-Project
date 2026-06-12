@@ -49,7 +49,7 @@ function SignupCompletePage() {
             <div className="signup-complete-button-row">
               <button
                 className="signup-complete-login-button"
-                onClick={() => navigate("/api/members/login")}
+                onClick={() => navigate("/members/login")}
               >
                 로그인하러 가기
               </button>

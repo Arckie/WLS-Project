@@ -11,12 +11,12 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MemberUpdateRequestDto {
+public class MemberUpdateRequestDto { // 확인
     // 회원정보를 수정하기 위한 정보를 받는 Dto
     private String email;
     private String phone;
     private LocalDate birthDate;
-    private List<Long> LearningProfile;
+    private List<Long> learningProfile;
 
     // 선택적 OPTIONAL
     private String currentPassword;

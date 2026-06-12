@@ -84,7 +84,7 @@ function LectureContent({
                 type="button"
                 className="lecture-admin-button edit"
                 onClick={() =>
-                  navigate(`/api/lecture/update/${currentLecture.id}`)
+                  navigate(`/lecture/update/${currentLecture.id}`)
                 }
               >
                 수정

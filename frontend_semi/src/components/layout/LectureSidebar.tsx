@@ -277,7 +277,7 @@ function LectureSidebar({
                     <button
                         type="button"
                         className="lecture-create-button"
-                        onClick={() => navigate("/api/lecture/insert")}
+                        onClick={() => navigate("/lecture/insert")}
                     >
                         + 새 글 작성
                     </button>
