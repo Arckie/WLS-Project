@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import MyPageSideBar from "../components/layout/MyPageSideBar";
 import customAxios from "../api/axiosInstance";
 import "./AdminPage.css";
+import type { User } from "../types/User";
 
 interface AdminStatus {
     totalMemberCount: number;
@@ -19,7 +20,11 @@ interface AdminMember {
     role: string;
 }
 
-function AdminPage() {
+interface AppRoutesProps {
+  user: User | null;
+}
+
+function AdminPage({user}:AppRoutesProps) {
    
     //관리자만 관리자페이지에 접근  
     const navigate = useNavigate();

@@ -59,7 +59,7 @@ function AppRoutes({ user, handleLoginSuccess, handleLogout }: AppProps) {
                              user === null 
                                ? <Navigate to="/api/members/login" replace/>
                                : isAdmin 
-                                   ? <AdminPage /> 
+                                   ? <AdminPage user={user} /> 
                                    : <Navigate to="/api/members/mypage" replace/>}/>
                     <Route path="/api/lecture/list" element={<LecturePage user={user} />}/>
                     <Route path="/lecture/list" element={<Navigate to="/api/lecture/list" replace />} />
