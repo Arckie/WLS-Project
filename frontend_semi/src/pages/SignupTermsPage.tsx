@@ -23,7 +23,7 @@ function SignupTermsPage() {
       return;
     }
 
-    navigate("/api/members/signup");
+    navigate("/members/signup");
   };
 
   return (
@@ -140,7 +140,7 @@ function SignupTermsPage() {
             <div className="terms-button-group">
               <button
                 className="terms-prev-button"
-                onClick={() => navigate("/api/members/login")}
+                onClick={() => navigate("/members/login")}
               >
                 이전
               </button>

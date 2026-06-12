@@ -14,7 +14,6 @@ function App() {
 
     if (!token) {
       localStorage.removeItem("user");
-      localStorage.removeItem("role");
       setUser(null);
       return;
     }
@@ -30,7 +29,6 @@ function App() {
       } catch (error) {
         console.error("저장된 사용자 정보 파싱 실패:", error);
         localStorage.removeItem("user");
-        localStorage.removeItem("role");
         localStorage.removeItem("accessToken");
         setUser(null);
       }
@@ -39,24 +37,22 @@ function App() {
 
   const handleLoginSuccess = (userData: User) => { // LoginPage를 통해 로그인했을때 setUser 관리
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('role', userData.role);
+    // 이제 로컬용이 아니고 배포도 해야해서 로컬스토리지에 유저 정보를 보여주지 않음
+    // localStorage.setItem('user', JSON.stringify(userData));
     console.log('로그인 성공');
   }
 
   const navigate = useNavigate();
 
   // 로그인한 사용자가 '로그 아웃' 버튼을 클릭했습니다.
-  const handleLogout = (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
+  const handleLogout = (event?: React.MouseEvent<HTMLElement>) => {
+    // event가 없을 수도 있으니까
+    event?.preventDefault();
     setUser(null);
     localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
-    localStorage.removeItem('role');
-    console.log('로그 아웃 성공');
     // 로그아웃시 이동할 페이지 설정
-    navigate(`/api/members/login`,{replace:true});
+    navigate(`/members/login`, { replace: true });
   };
 
 

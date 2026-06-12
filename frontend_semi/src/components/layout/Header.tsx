@@ -7,7 +7,7 @@ import "./Header.css";
 
 type HeaderProps = {
   user: User | null;
-  handleLogout: (event: React.MouseEvent<HTMLElement>) => void;
+  handleLogout: (event?: React.MouseEvent<HTMLElement>) => void;
 };
 
 function Header({ user, handleLogout }: HeaderProps) {
@@ -20,14 +20,22 @@ function Header({ user, handleLogout }: HeaderProps) {
     return Number.isFinite(signOffAt) && Date.now() - signOffAt < 5000;
   };
 
-  const clearExpiredSession = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
+  // 대신해서 프롭스로 받은 handleLogout() 함수를 사용하면 됨
+  // const clearExpiredSession = () => {
+  //   localStorage.removeItem("accessToken");
+  //   localStorage.removeItem("refreshToken");
+  //   localStorage.removeItem("user");
 
+  //   alert("로그인 시간이 만료되었습니다. 다시 로그인해 주세요.");
+
+  //   window.location.replace("/members/login");
+  // };
+
+  // 위의 함수를 대신 할 함수 생성
+  const handleSessionExpired = () => {
     alert("로그인 시간이 만료되었습니다. 다시 로그인해 주세요.");
-
-    window.location.replace("/api/members/login");
+    // 부모 handleLogout이 setUser(null) + localStorage 정리 + navigate를 모두 처리
+    handleLogout();
   };
 
   const checkTokenExpired = () => {
@@ -39,14 +47,14 @@ function Header({ user, handleLogout }: HeaderProps) {
           return;
         }
 
-        clearExpiredSession();
+        handleSessionExpired();
       }
 
       return;
     }
 
     if (isJwtExpired(token)) {
-      clearExpiredSession();
+      handleSessionExpired();
     }
   };
 
@@ -109,7 +117,7 @@ function Header({ user, handleLogout }: HeaderProps) {
               <button
                 type="button"
                 className="header-button"
-                onClick={() => navigate("/api/lecture/list")}
+                onClick={() => navigate("/lecture/list")}
               >
                 <span className="header-button-icon">▣</span>
                 강의실
@@ -118,7 +126,7 @@ function Header({ user, handleLogout }: HeaderProps) {
               <button
                 type="button"
                 className="header-button"
-                onClick={() => navigate("/api/notices")}
+                onClick={() => navigate("/notices")}
               >
                 <span className="header-button-icon">▤</span>
                 공지사항
@@ -168,7 +176,7 @@ function Header({ user, handleLogout }: HeaderProps) {
               <button
                 type="button"
                 className="header-button"
-                onClick={() => navigate("/api/members/login")}
+                onClick={() => navigate("/members/login")}
               >
                 LOGIN
               </button>

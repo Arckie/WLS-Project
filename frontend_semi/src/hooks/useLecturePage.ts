@@ -49,7 +49,7 @@ export function useLecturePage() {
   const handleSetCurrentLecture = (lecture: Lecture) => {
     setCurrentLecture(lecture);
 
-    navigate(`/api/lecture/list?lectureId=${lecture.id}`, {
+    navigate(`/lecture/list?lectureId=${lecture.id}`, {
       replace: false,
     });
   };
@@ -66,7 +66,7 @@ export function useLecturePage() {
 
       alert("강의가 삭제되었습니다.");
 
-      navigate("/api/lecture/list", {
+      navigate("/lecture/list", {
         replace: true,
       });
 

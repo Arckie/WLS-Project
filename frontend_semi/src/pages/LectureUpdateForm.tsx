@@ -22,7 +22,7 @@ function LectureUpdateForm({ user }: LectureUpdateFormProps) {
   useEffect(() => {
     if (user?.role !== "ADMIN") {
       alert("관리자만 접근할 수 있는 페이지입니다.");
-      navigate(user ? "/" : "/api/members/login");
+      navigate(user ? "/" : "/members/login");
     }
   }, [user, navigate]);
 
@@ -105,7 +105,7 @@ function LectureUpdateForm({ user }: LectureUpdateFormProps) {
       setLecture(INITIAL_LECTURE_FORM_VALUE);
       setErrors(INITIAL_LECTURE_FORM_ERRORS);
       setSelectedCategory("");
-      navigate("/api/lecture/list");
+      navigate("/lecture/list");
     } catch (error: unknown) {
       if (isAxiosError(error) && error.response) {
         setErrors((prev) => ({
@@ -135,7 +135,7 @@ function LectureUpdateForm({ user }: LectureUpdateFormProps) {
       onCategoryChange={handleCategoryChange}
       onFieldChange={handleFieldChange}
       onSubmit={handleSubmit}
-      onCancel={() => navigate("/api/lecture/list")}
+      onCancel={() => navigate("/lecture/list")}
     />
   );
 }

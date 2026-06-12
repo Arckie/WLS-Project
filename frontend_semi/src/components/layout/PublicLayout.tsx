@@ -5,7 +5,7 @@ import type { User } from "../../types/User";
 
 interface AppRoutesProps { // App.tsx에서 온 프롭스 - LoginPage.tsx에 전달만 함
   user: User | null;
-  handleLogout: (event: React.MouseEvent<HTMLElement>) => void;
+  handleLogout: (event?: React.MouseEvent<HTMLElement>) => void;
 }
 
 function PublicLayout({ user, handleLogout }: AppRoutesProps) {

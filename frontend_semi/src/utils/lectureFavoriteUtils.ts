@@ -1,7 +1,7 @@
 import type { Favorite } from "../types/Favorite";
 
 export const makeLectureFavoriteUrl = (lectureId: number) => {
-  return `/api/lecture/list?lectureId=${lectureId}`;
+  return `/lecture/list?lectureId=${lectureId}`;
 };
 
 export const findFavoriteByLectureId = (

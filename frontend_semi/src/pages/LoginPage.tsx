@@ -56,7 +56,8 @@ function LoginPage({ handleLoginSuccess }: AppRoutesProps) {
                 // userData는 자바스크립트 객체여서 문자열로 바꿔줘야 함
                 // JSON.stringify 함수는 JavaScript 객체를 JSON 문자열로 변환해 줍니다.
                 // App.tsx에서 로컬스토리지에 저장할 예정이라 여기서는 안해도 됨
-                localStorage.setItem("user", JSON.stringify(userData));
+                // 이제 로컬용이 아니고 배포도 해야해서 로컬스토리지에서 user 정보 보여주지 않음
+                // localStorage.setItem("user", JSON.stringify(userData));
             }
 
             // 로그인이 되면 메인 홈페이지로 이동시킴
@@ -106,7 +107,7 @@ function LoginPage({ handleLoginSuccess }: AppRoutesProps) {
                     <button className="login-button" onClick={handleLogin}>로그인</button>
                     <p className="login-signup-text">
                         아직 회원이 아니신가요?{" "}
-                        <span className="login-signup-link" onClick={() => navigate("/api/members/signup")}>
+                        <span className="login-signup-link" onClick={() => navigate("/members/signup")}>
                             회원가입
                         </span>
                     </p>

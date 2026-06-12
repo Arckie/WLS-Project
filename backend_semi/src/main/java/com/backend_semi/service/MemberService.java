@@ -197,8 +197,8 @@ public class MemberService {
 
         // 2. 관심 학습 분야 수정
         // 프론트에서 learningProfile 배열을 보내면 기존걸 지우고 새 배열로 교체.
-        if (request.getLearningProfile() != null) {
-            memberLearningProfileRepository.deleteByMember(member);
+        if (request.getLearningProfile() != null) { // 수정
+            memberLearningProfileRepository.deleteAllByMember(member);
 
             for (Long learningProfileId : request.getLearningProfile()) {
                 LearningProfile learningProfile = learningProfileRepository.findById(learningProfileId)

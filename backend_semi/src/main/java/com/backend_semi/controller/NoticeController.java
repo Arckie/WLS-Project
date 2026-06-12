@@ -45,30 +45,6 @@ public class NoticeController {
         return ResponseEntity.ok(notices);
     }
 
-    // 공지사항 단건 조회
-    @GetMapping("/{noticeId}")
-    public ResponseEntity<NoticeResponseDto> getNotice(@PathVariable Long noticeId){
-        NoticeResponseDto notice = noticeService.getNotice(noticeId);
-
-        return ResponseEntity.ok(notice);
-    }
-
-    // 카테고리별 공지사항 조회
-    @GetMapping("/category/{noticeCateogryId}")
-    public ResponseEntity<List<NoticeResponseDto>> getNoticeListByCategory(@PathVariable Long noticeCategoryId){
-        List<NoticeResponseDto> notices = noticeService.getNoticeListByCategory(noticeCategoryId);
-
-        return ResponseEntity.ok(notices);
-    }
-
-    // 작성자별 공지사항 조회
-    @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<NoticeResponseDto>> getNoticeListByMember(@PathVariable Long memberId){
-        List<NoticeResponseDto> notices = noticeService.getNoticeListByMember(memberId);
-
-        return ResponseEntity.ok(notices);
-    }
-
     // 공지사항 수정
     @PutMapping(value = "/{noticeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateNotice(

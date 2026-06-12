@@ -5,14 +5,9 @@ function MyPageSideBar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 일반 회원 로그인시 관리자 숨기기
-  const role = localStorage.getItem("role");
-  const isAdmin = role === "ADMIN";  
-
-  const isMember = location.pathname === "/api/members/mypage";
+  const isMember = location.pathname === "/members/mypage";
   const isLearning = location.pathname === "/members/mypage/learning";
   const isFavorite = location.pathname === "/members/mypage/favorite";
-  const isAdminPage = location.pathname === "/members/mypage/AdminPage";
   //===========================================================================
   // 아래의 변수는 각 페이지의 위치일때 페이지 아이콘의 이미지를 바꾸기 위한 변수입니다. 삼항연산자를 활용하여
   // 멤버일때 이것, 학습일때 이것, 즐겨찾기일떄 이것, 식으로 작동하고 디폴트는 멤버일때입니다.
@@ -22,10 +17,7 @@ function MyPageSideBar() {
       ? "/mypage-learning.svg"
       : isFavorite
         ? "/mypage-favorite.svg"
-        : isAdminPage
-            ? "/mypage-admin.svg"
-            : "/mypage-profile.svg";
-
+        : "/mypage-profile.svg";
 
   const bottomTitle = isMember
     ? "PROFILE"
@@ -33,9 +25,7 @@ function MyPageSideBar() {
       ? "LEARNING-INFO"
       : isFavorite
         ? "FAVORITE"
-            : isAdminPage
-                ? "ADMIN"
-                : "PROFILE";
+        : "PROFILE";
   //===========================================================================
 
   return (
@@ -64,7 +54,7 @@ function MyPageSideBar() {
         <button
           type="button"
           className={isMember ? "mypage-menu active" : "mypage-menu"}
-          onClick={() => navigate("/api/members/mypage")}
+          onClick={() => navigate("/members/mypage")}
         >
           <span>02</span>
           회원정보
@@ -78,17 +68,6 @@ function MyPageSideBar() {
           <span>03</span>
           즐겨찾기
         </button>
-
-  {isAdmin && (
-        <button
-          type="button"
-          className={isAdminPage ? "mypage-menu active" : "mypage-menu"}
-          onClick={() => navigate("/members/mypage/AdminPage")}
-        >
-          <span>04</span>
-          관리자
-        </button>
-        )}
       </div>
 
       <div className="mypage-sidebar-guide">
