@@ -14,6 +14,7 @@ function App() {
 
     if (!token) {
       localStorage.removeItem("user");
+      localStorage.removeItem("role");
       setUser(null);
       return;
     }
@@ -29,6 +30,7 @@ function App() {
       } catch (error) {
         console.error("저장된 사용자 정보 파싱 실패:", error);
         localStorage.removeItem("user");
+        localStorage.removeItem("role");
         localStorage.removeItem("accessToken");
         setUser(null);
       }
@@ -38,6 +40,7 @@ function App() {
   const handleLoginSuccess = (userData: User) => { // LoginPage를 통해 로그인했을때 setUser 관리
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('role', userData.role);
     console.log('로그인 성공');
   }
 
@@ -48,10 +51,12 @@ function App() {
     event.preventDefault();
     setUser(null);
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
+    localStorage.removeItem('role');
     console.log('로그 아웃 성공');
     // 로그아웃시 이동할 페이지 설정
-    navigate(`/api/members/login`);
+    navigate(`/api/members/login`,{replace:true});
   };
 
 

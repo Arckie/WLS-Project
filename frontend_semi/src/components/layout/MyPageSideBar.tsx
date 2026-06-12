@@ -5,6 +5,10 @@ function MyPageSideBar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // 일반 회원 로그인시 관리자 숨기기
+  const role = localStorage.getItem("role");
+  const isAdmin = role === "ADMIN";  
+
   const isMember = location.pathname === "/api/members/mypage";
   const isLearning = location.pathname === "/members/mypage/learning";
   const isFavorite = location.pathname === "/members/mypage/favorite";
@@ -75,6 +79,7 @@ function MyPageSideBar() {
           즐겨찾기
         </button>
 
+  {isAdmin && (
         <button
           type="button"
           className={isAdminPage ? "mypage-menu active" : "mypage-menu"}
@@ -83,6 +88,7 @@ function MyPageSideBar() {
           <span>04</span>
           관리자
         </button>
+        )}
       </div>
 
       <div className="mypage-sidebar-guide">

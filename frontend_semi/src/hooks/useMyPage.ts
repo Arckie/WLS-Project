@@ -72,6 +72,14 @@ export function useMyPage() {
   };
 
   const getMemberInfo = async () => {
+    const token = localStorage.getItem("accessToken");
+
+    if(!token){
+      setLoading(false);
+      return;
+
+    }
+
     try {
       const response = await customAxios.get("/api/members/mypage");
       const data = toMemberInfo(response.data);
@@ -309,6 +317,7 @@ export function useMyPage() {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
+      localStorage.removeItem("role");
 
       alert("회원탈퇴가 완료되었습니다.");
 

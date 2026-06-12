@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MyPageSideBar from "../components/layout/MyPageSideBar";
 import customAxios from "../api/axiosInstance";
 import "./AdminPage.css";
@@ -19,6 +20,13 @@ interface AdminMember {
 }
 
 function AdminPage() {
+   
+    //관리자만 관리자페이지에 접근  
+    const navigate = useNavigate();
+    const role = localStorage.getItem("role");
+    const isAdmin = role === "ADMIN";
+    
+
     const [status, setStatus] = useState<AdminStatus | null>(null);
     const [members, setMembers] = useState<AdminMember[]>([]);
     const [keyword, setKeyword] = useState("");
@@ -26,11 +34,27 @@ function AdminPage() {
     const [currentPage, setCurrentPage] = useState(0);
     const [roleFilter, setRoleFilter] = useState("ALL");
 
+    //일반회원 접근 금지
+    useEffect(()=> {
+        const token = localStorage.getItem("accessToken");
+        if(!token){
+         return;
+        }
+        
+        if (!isAdmin) {
+            alert("관리자만 접근할 수 있습니다.");
+            navigate("/api/members/mypage",{replace:true});    
+        }
+    },[isAdmin, navigate]); 
+
+
     // 관리자 페이지 최초 진입 시 관리자 통계와 회원 목록을 조회
     useEffect(() => {
+        if(isAdmin){
         getAdminStatus();
         getMemberList();
-    }, []);
+        }
+    }, [isAdmin]);
 
     // 검색어와 권한 필터를 초기화하고 관리자 정보를 다시 조회
     const refreshAdminPage = () => {
@@ -96,7 +120,7 @@ function AdminPage() {
 
         console.log("권한변경 클릭", memberId, role);
 
-         if (role === "") return;
+         if (role === "") return false;
 
         try {
             await customAxios.put(
@@ -117,6 +141,8 @@ function AdminPage() {
 
         } catch (error) {
             console.error("권한 변경 실패:", error);
+
+            return false;
         }
     };
 
@@ -154,15 +180,10 @@ function AdminPage() {
                         <h1>관리자 페이지</h1>
                         <p> 시스템 현황을 한눈에 확인하고 관리할 수 있습니다. </p>
                     </div>
-                        <button
-                            type="button"
-                            className="admin-refresh-button"
-                            onClick={refreshAdminPage} >
-                            새로고침
-                        </button>
-                    </div>
+                        
+                 </div>
 
-                    /* 회원상황 통계 */
+                    {/* 회원상황 통계 */}
                     <section className="admin-status">
                         <div className="status-box">
                             <h4>전체 회원 수</h4>
@@ -185,7 +206,7 @@ function AdminPage() {
                         </div>
                     </section>
 
-                   /* 회원 목록 조회*/
+                  {/* 회원 목록 조회*/}
                     <section className="member-section">
                         <div className="member-search">
                             <input
@@ -241,14 +262,23 @@ function AdminPage() {
                                         <td>{member.loginId}</td>
                                         <td>{member.name}</td>
                                         <td>{member.email}</td>
-                                        <td>{member.createdAt}</td>
+                                        <td>{member.createdAt.substring(0,10)}</td>
                                         <td>{member.role}</td>
                                         <td>
                                         <div className="member-action">
                                             <select className="role-select"
                                                 defaultValue=""
-                                                onChange={(e) =>
-                                                changeMemberRole(member.memberId, e.target.value) }>
+                                                onChange={async (e) =>{
+                                                const selectBox = e.currentTarget;
+                                                const selectedRole = selectBox.value;
+
+                                                await changeMemberRole(member.memberId, selectedRole);
+                                                
+                                                selectBox.value= "";
+                                                
+                                                 }}
+                                                 
+                                               >
                                                 <option value="" disabled>권한변경</option>
                                                 <option value="USER">USER</option>
                                                 <option value="ADMIN">ADMIN</option>
@@ -267,7 +297,7 @@ function AdminPage() {
                             </tbody>
                         </table>
 
-                         /*페이징*/
+                         {/* 페이징 */}
                             <div className="pagination">
                                 <button
                                     className="page-btn"
