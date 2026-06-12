@@ -84,6 +84,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/notices/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/notices/**").hasRole("ADMIN")
 
+                        // 5) 관리자(ADMIN)만 가능한 "관리자 페이지"
+                        .requestMatchers("/api/admin", "/api/admin/**").hasRole("ADMIN")
+
                         // 5) 그 외의 나머지 모든 요청은 반드시 로그인(authenticated)을 해야만 접근 가능
                         // (마이페이지, 즐겨찾기, 학습진도 등 Authentication을 쓰는 컨트롤러들)
                         .anyRequest().authenticated()
