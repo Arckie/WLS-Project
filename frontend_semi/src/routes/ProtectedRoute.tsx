@@ -20,7 +20,7 @@ function ProtectedRoute({ user, children }: ProtectedRouteProps) {
         if (!isLoggedIn) {
             alert("로그인이 필요합니다.");
 
-            navigate("/api/members/login", {
+            navigate("/members/login", {
                 replace: true,
                 state: {
                     from: location.pathname + location.search,

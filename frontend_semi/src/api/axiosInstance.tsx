@@ -60,11 +60,11 @@ axiosInstance.interceptors.response.use(
 
         // 현재 에러가 난 이 요청이 "혹시 로그인 하려고 시도했던 요청이었나?"를 판별하는 중
         // 로그인 시도 중 비번을 틀려서 난 401 에러와, 로그인 후 토큰이 만료되어 난 401 에러를 구분 가능
-        // url에 "/member/login"가 포함되어 있다면 로그인 시도중 비번 틀린 오류
+        // url에 "/api/member/login"가 포함되어 있다면 로그인 시도중 비번 틀린 오류
         // 백엔드의 경로(실제 웹페이지의 경로를 입력해야 함)
         const isLoginRequest = error.config?.url?.includes("/api/members/login");
 
-        // 401오류인데 url 주소에 "/member/login"가 포함되어있지 않다면
+        // 401오류인데 url 주소에 "/api/member/login"가 포함되어있지 않다면 (로그인 시도가 아니니까)
         // 토큰 유효기간이 만료되었거나 토큰이 처음부터 존재하지 않았거나해서 인증이 안된상태
         if (error.response?.status === 401 && !isLoginRequest) {
             // 만료된 토큰 삭제처리 (+ 로그아웃 처리)
@@ -77,7 +77,7 @@ axiosInstance.interceptors.response.use(
             // 인증이 안된 사용자를 강제로 로그인페이지("/login")로 이동시킴
             // replace()를 사용하면 뒤로가기 기록도 삭제해서 뒤로가기 버튼을 사용하지 못함
             // (프론트 내에서의 주소(path)임 - 화면)
-            window.location.replace("/api/members/login");
+            window.location.replace("/members/login");
         }
 
         return Promise.reject(error);

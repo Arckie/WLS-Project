@@ -52,7 +52,7 @@ function App() {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('user');
     // 로그아웃시 이동할 페이지 설정
-    navigate(`/api/members/login`, { replace: true });
+    navigate(`/members/login`, { replace: true });
   };
 
 

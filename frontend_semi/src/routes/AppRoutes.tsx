@@ -33,28 +33,21 @@ function AppRoutes({ user, handleLoginSuccess, handleLogout }: AppProps) {
                 <Route path="/" element={<Home />} />
                 <Route path="/introduce/" element={<Introduce />} />
                 <Route path="/introduce/howtouse" element={<HowToUse />} />
-                <Route path="/api/notices" element={<NoticeContents user={user} />} />
+                <Route path="/notices" element={<NoticeContents user={user} />} />
 
                 {/* 로그인 / 회원가입 */}
-                <Route
-                    path="/api/members/login"
-                    element={<LoginPage handleLoginSuccess={handleLoginSuccess} />}
-                />
-                <Route path="/api/members/signup" element={<SignupPage />} />
+                <Route path="/members/login" element={<LoginPage handleLoginSuccess={handleLoginSuccess} />} />
+                <Route path="/members/signup" element={<SignupPage />} />
                 <Route path="/signup/terms" element={<SignupTermsPage />} />
                 <Route path="/signup/complete" element={<SignupCompletePage />} />
 
                 {/* 로그인 필요 페이지 */}
                 <Route element={<ProtectedLayout user={user} />}>
-                    <Route path="/api/members/mypage" element={<MyPage handleLogout={handleLogout} />} />
-                    <Route path="/members/mypage" element={<Navigate to="/api/members/mypage" replace />} />
+                    <Route path="/members/mypage" element={<MyPage handleLogout={handleLogout} />} />
                     <Route path="/members/mypage/favorite" element={<FavoritePage />} />
                     <Route path="/members/mypage/learning" element={<LearningPage />} />
-                    <Route path="/api/lecture/list" element={<LecturePage user={user} />} />
-                    <Route path="/lecture/list" element={<Navigate to="/api/lecture/list" replace />} />
-                    <Route path="/api/lecture/insert" element={<LectureInsertForm user={user} />} />
-                    <Route path="/lecture/insert" element={<Navigate to="/api/lecture/insert" replace />} />
-                    <Route path="/api/lecture/update/:id" element={<LectureUpdateForm user={user} />} />
+                    <Route path="/lecture/list" element={<LecturePage user={user} />} />
+                    <Route path="/lecture/insert" element={<LectureInsertForm user={user} />} />
                     <Route path="/lecture/update/:id" element={<LectureUpdateForm user={user} />} />
                 </Route>
 

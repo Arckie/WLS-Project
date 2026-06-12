@@ -5,7 +5,7 @@ function MyPageSideBar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isMember = location.pathname === "/api/members/mypage";
+  const isMember = location.pathname === "/members/mypage";
   const isLearning = location.pathname === "/members/mypage/learning";
   const isFavorite = location.pathname === "/members/mypage/favorite";
   //===========================================================================
@@ -54,7 +54,7 @@ function MyPageSideBar() {
         <button
           type="button"
           className={isMember ? "mypage-menu active" : "mypage-menu"}
-          onClick={() => navigate("/api/members/mypage")}
+          onClick={() => navigate("/members/mypage")}
         >
           <span>02</span>
           회원정보

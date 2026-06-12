@@ -58,7 +58,7 @@ function LearningPage() {
     const visibleRecentLectures = recentLectures.slice(0, 6);
 
     const handleMoveLecture = (lectureId: number) => {
-        navigate(`/api/lecture/list?lectureId=${lectureId}`);
+        navigate(`/lecture/list?lectureId=${lectureId}`);
     };
 
     return (

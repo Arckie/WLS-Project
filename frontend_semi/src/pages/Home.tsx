@@ -112,19 +112,19 @@ function Home() {
 
   const handleMoveNotice = (noticeId?: number) => {
     if (noticeId) {
-      navigate(`/api/notices?noticeId=${noticeId}`);
+      navigate(`/notices?noticeId=${noticeId}`);
       return;
     }
 
-    navigate("/api/notices");
+    navigate("/notices");
   };
 
   const handleMoveLectureCategory = (category: LectureCategorySummary) => {
-    navigate(`/api/lecture/list?lectureId=${category.firstLectureId}`);
+    navigate(`/lecture/list?lectureId=${category.firstLectureId}`);
   };
 
   const handleMoveLecture = (lectureId: number) => {
-    navigate(`/api/lecture/list?lectureId=${lectureId}`);
+    navigate(`/lecture/list?lectureId=${lectureId}`);
   };
 
   const recentNotices = notices.slice(0, 3);
@@ -151,7 +151,7 @@ function Home() {
             <button
               type="button"
               className="home-primary-button"
-              onClick={() => navigate("/api/lecture/list")}
+              onClick={() => navigate("/lecture/list")}
             >
               ▶ 학습 시작
             </button>
@@ -159,7 +159,7 @@ function Home() {
             <button
               type="button"
               className="home-outline-button"
-              onClick={() => navigate("/api/lecture/list")}
+              onClick={() => navigate("/lecture/list")}
             >
               📖 강의 둘러보기
             </button>
@@ -221,7 +221,7 @@ function Home() {
             <button
               type="button"
               className="home-small-link-button"
-              onClick={() => navigate("/api/lecture/list")}
+              onClick={() => navigate("/lecture/list")}
             >
               더보기 ›
             </button>
@@ -290,7 +290,7 @@ function Home() {
             <button
               type="button"
               className="home-small-link-button"
-              onClick={() => navigate("/api/notices")}
+              onClick={() => navigate("/notices")}
             >
               더보기 ›
             </button>
@@ -350,7 +350,7 @@ function Home() {
               <button
                 type="button"
                 className="home-small-link-button"
-                onClick={() => navigate("/api/lecture/list")}
+                onClick={() => navigate("/lecture/list")}
               >
                 강의보기 ›
               </button>
