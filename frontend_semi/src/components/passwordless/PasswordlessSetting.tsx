@@ -53,8 +53,8 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 setQrDataUrl(data.qr);
                 // 서버 주소 저장
                 setServerUrl(data.serverUrl);
-
-            } else {
+            } 
+            
                 const random       = crypto.randomUUID();
                 const newSessionId = crypto.randomUUID();
                 setSessionId(newSessionId);
@@ -62,7 +62,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                     userId: loginId, random, sessionId: newSessionId,
                 });
                 setServicePassword(response.data.data.servicePassword);
-            }
+
             setTimeLeft(180);
             setStep("code");
 
