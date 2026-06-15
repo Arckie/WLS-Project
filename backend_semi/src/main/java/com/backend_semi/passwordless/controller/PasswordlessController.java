@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/passwordless")
+@RequestMapping("/passwordless")
 public class PasswordlessController {
 
     private final PasswordlessService passwordlessService;
