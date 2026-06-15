@@ -21,7 +21,9 @@ public class CorsConfig {
         // 도메인 주소로 수정
         configuration.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
-                "http://127.0.0.1:5173"
+                "http://127.0.0.1:5173",
+                "http://passwordless.arckie.xyz",
+                "http://wls.arckie.xyz"
                 // 나중에 도메인 주소 추가해야함
                 // ex) "https://jesuisben.store" / "https://*.jesuisben.store"
         ));
