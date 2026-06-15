@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.UUID;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -38,8 +36,6 @@ public class PasswordlessController {
             return ResponseEntity.badRequest().body("존재하지 않는 아이디입니다.");
         }
         request.setServerKey(passwordlessProperties.getServerKey());
-        System.out.println("serverKey: " + request.getServerKey()); // 추가
-        System.out.println("userId: " + request.getUserId()); // 추가
         return ResponseEntity.ok(passwordlessService.JoinAp(request));
     }
 
@@ -78,7 +74,7 @@ public class PasswordlessController {
     }
 
     @PostMapping("/login-process")
-    public ResponseEntity<?> loginProcess(@RequestBody IsApRequestDto request) {
+    public ResponseEntity<?> loginProcess(@RequestBody GetSpRequestDto request) {
 
         // 1. DB에 존재하는 아이디인지 먼저 확인
         if (!memberRepository.existsByLoginId(request.getUserId())) {
@@ -86,9 +82,12 @@ public class PasswordlessController {
         }
 
         // 2. Passwordless 등록 여부 확인
-        request.setServerKey(passwordlessProperties.getServerKey()); // 추가
+        IsApRequestDto isApRequest = new IsApRequestDto();
+        isApRequest.setUserId(request.getUserId());
+        isApRequest.setServerKey(passwordlessProperties.getServerKey());
+
         PasswordlessApiResponse<IsApResponseDataDto> isApResponse =
-                passwordlessService.isAp(request);
+                passwordlessService.isAp(isApRequest);
 
         System.out.println("isExist: " + isApResponse.getData().isExist());
 
@@ -97,10 +96,11 @@ public class PasswordlessController {
                     .body("Passwordless 미등록 사용자입니다. 먼저 앱을 등록해주세요.");
         }
 
-        // 3. 토큰 요청
+        // 3. 토큰 요청 + 복호화
         GetTokenForOneTimeRequestDto tokenRequest = new GetTokenForOneTimeRequestDto();
         tokenRequest.setUserId(request.getUserId());
-        tokenRequest.setServerKey(passwordlessProperties.getServerKey()); // 추가
+        tokenRequest.setServerKey(passwordlessProperties.getServerKey());
+
         PasswordlessApiResponse<GetTokenForOneTimeResponseDto> tokenResponse =
                 passwordlessService.GetTokenForOneTimeDecrypto(tokenRequest);
 
@@ -108,9 +108,12 @@ public class PasswordlessController {
         GetSpRequestDto spRequest = new GetSpRequestDto();
         spRequest.setUserId(request.getUserId());
         spRequest.setToken(tokenResponse.getData().getToken());
-        spRequest.setRandom(UUID.randomUUID().toString());
-        spRequest.setSessionId(UUID.randomUUID().toString());
-        spRequest.setServerKey(passwordlessProperties.getServerKey()); // 추가
+
+        // 핵심: 프론트가 보낸 값을 그대로 사용
+        spRequest.setRandom(request.getRandom());
+        spRequest.setSessionId(request.getSessionId());
+
+        spRequest.setServerKey(passwordlessProperties.getServerKey());
 
         return ResponseEntity.ok(passwordlessService.GetSp(spRequest));
     }

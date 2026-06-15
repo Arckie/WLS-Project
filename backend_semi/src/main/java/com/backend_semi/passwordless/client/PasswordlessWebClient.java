@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
-import software.amazon.awssdk.core.internal.http.pipeline.RequestToResponsePipeline;
-
 
 @Component
 public class PasswordlessWebClient {
@@ -156,6 +154,10 @@ public class PasswordlessWebClient {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+
+        if (responseBody == null || responseBody.isBlank()) {
+            throw new IllegalStateException("Passwordless result 응답 Body가 비어 있습니다.");
+        }
 
         try {
             return objectMapper.readValue(
