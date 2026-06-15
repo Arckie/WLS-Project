@@ -68,6 +68,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
         } catch (error: any) {
             setStep("input");
+            console.log(error);
             const message = error.response?.data ?? error.response?.data?.message ?? "서버와 연결할 수 없습니다.";
             setErrors(typeof message === "string" ? message : "서버와 연결할 수 없습니다.");
         }
