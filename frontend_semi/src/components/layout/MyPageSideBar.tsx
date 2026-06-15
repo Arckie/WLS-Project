@@ -56,7 +56,7 @@ function MyPageSideBar({ user }: MyPageSideBarProps) {
                     <button
                         type="button"
                         className={isAdminPage ? "mypage-menu active" : "mypage-menu"}
-                        onClick={() => navigate("/admin")}
+                        onClick={() => navigate("/members/mypage/admin")}
                     >
                         <span>00</span>
                         관리자
