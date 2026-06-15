@@ -6,7 +6,6 @@ import { Alert } from "react-bootstrap";
 import "./PasswordlessSetting.css";
 import type { User } from "../../types/User";
 
-// 화면 변환
 type SetupStep = "input" | "loading" | "code";
 
 interface Props {
@@ -14,7 +13,6 @@ interface Props {
 }
 
 function PasswordlessSetting({ handleLoginSuccess }: Props) {
-    // State
     const [loginId, setLoginId] = useState("");
     const [step, setStep] = useState<SetupStep>("input");
     const [errors, setErrors] = useState("");
@@ -26,22 +24,16 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
     const [registerKey, setRegisterKey] = useState("");
     const [timeLeft, setTimeLeft] = useState(180);
 
-    // 파생값
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
     const isExpired = timeLeft <= 0;
     const timerText = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
-    // 라우터
     const navigate = useNavigate();
     const location = useLocation();
 
-    // LoginPage에서 state로 넘긴 mode
-    // mode === "login"   → Passwordless 로그인
-    // mode === "setting" → Passwordless 앱 등록
     const mode = location.state?.mode ?? "login";
 
-    // crypto.randomUUID()가 환경에 따라 없을 수 있으므로 안전한 ID 생성 함수 사용
     const makeId = () => {
         if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
             return crypto.randomUUID();
@@ -50,7 +42,6 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
     };
 
-    // 에러 메시지 추출
     const getErrorMessage = (error: any) => {
         const data = error.response?.data;
 
@@ -69,7 +60,6 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         return "서버와 연결할 수 없습니다.";
     };
 
-    // 확인 버튼: 아이디 입력 → 코드 화면
     const handleConfirm = async (event?: React.SyntheticEvent) => {
         event?.preventDefault();
 
@@ -83,9 +73,9 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         setErrors("");
         setStep("loading");
 
-        console.log("Passwordless handleConfirm 실행");
-        console.log("현재 mode =", mode);
-        console.log("입력 loginId =", trimmedLoginId);
+        console.log("===== Passwordless handleConfirm 실행 =====");
+        console.log("mode =", mode);
+        console.log("loginId =", trimmedLoginId);
 
         try {
             if (mode === "setting") {
@@ -112,8 +102,8 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 const random = makeId();
                 const newSessionId = makeId();
 
-                console.log("생성 random =", random);
-                console.log("생성 sessionId =", newSessionId);
+                console.log("random =", random);
+                console.log("sessionId =", newSessionId);
 
                 setSessionId(newSessionId);
 
@@ -146,12 +136,10 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         }
     };
 
-    // 재발급 버튼
     const handleReissue = () => {
         handleConfirm();
     };
 
-    // 확인 버튼: 코드 화면 → 승인 확인
     const handleResult = async () => {
         if (isExpired) {
             alert("인증 시간이 만료됐습니다. 다시 시도해주세요.");
@@ -172,12 +160,14 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 return;
             }
 
+            const trimmedLoginId = loginId.trim();
+
             console.log("result Axios 호출");
-            console.log("userId =", loginId.trim());
+            console.log("userId =", trimmedLoginId);
             console.log("sessionId =", sessionId);
 
             const response = await customAxios.post("/api/passwordless/result", {
-                userId: loginId.trim(),
+                userId: trimmedLoginId,
                 sessionId,
             });
 
@@ -189,7 +179,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 console.log("Passwordless 승인 완료. 내부 로그인 요청 시작");
 
                 const loginResponse = await customAxios.post("/api/members/passwordless-login", {
-                    userId: loginId.trim(),
+                    userId: trimmedLoginId,
                 });
 
                 console.log("passwordless-login 응답:", loginResponse.data);
@@ -207,8 +197,10 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
             } else if (auth === "N") {
                 alert("승인이 거부됐습니다. 다시 시도해주세요.");
                 setStep("input");
-            } else {
+            } else if (auth === "W") {
                 alert("아직 승인 대기 중입니다. 앱에서 승인해주세요.");
+            } else {
+                alert("인증 상태를 확인할 수 없습니다. 다시 시도해주세요.");
             }
         } catch (error: any) {
             console.error("Passwordless 결과 확인 실패:", error);
@@ -217,7 +209,6 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         }
     };
 
-    // 타이머
     useEffect(() => {
         if (step !== "code" || timeLeft <= 0) {
             return;
@@ -242,7 +233,6 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 </p>
 
                 <div className="passwordless-form">
-                    {/* 로딩 화면 */}
                     {step === "loading" && (
                         <div className="passwordless-loading">
                             <Settings
@@ -255,7 +245,6 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                         </div>
                     )}
 
-                    {/* 아이디 입력 화면 */}
                     {step === "input" && (
                         <>
                             {errors && <Alert variant="danger">{errors}</Alert>}
@@ -274,7 +263,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                                 }}
                                 onKeyDown={(event) => {
                                     if (event.key === "Enter") {
-                                        handleConfirm();
+                                        handleConfirm(event);
                                     }
                                 }}
                             />
@@ -288,6 +277,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                             />
 
                             <button
+                                type="button"
                                 className="passwordless-button"
                                 onClick={handleConfirm}
                             >
@@ -295,6 +285,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                             </button>
 
                             <button
+                                type="button"
                                 className="passwordless-cancel-button"
                                 onClick={() => navigate("/members/login")}
                             >
@@ -313,7 +304,6 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                         </>
                     )}
 
-                    {/* 코드 표시 화면 */}
                     {step === "code" && (
                         <>
                             {mode === "login" && (
@@ -375,6 +365,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
                             {isExpired && (
                                 <button
+                                    type="button"
                                     className="auth-reissue-button"
                                     onClick={handleReissue}
                                 >
@@ -383,6 +374,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                             )}
 
                             <button
+                                type="button"
                                 className="passwordless-button"
                                 onClick={handleResult}
                                 disabled={isExpired}
@@ -396,6 +388,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                             </button>
 
                             <button
+                                type="button"
                                 className="passwordless-cancel-button"
                                 onClick={() => setStep("input")}
                             >
