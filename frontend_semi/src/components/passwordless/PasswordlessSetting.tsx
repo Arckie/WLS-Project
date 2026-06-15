@@ -45,7 +45,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
         try {
             if (mode === "setting") {
-                const response = await customAxios.post("/passwordless/join-ap", { userId: loginId });
+                const response = await customAxios.post("/api/passwordless/join-ap", { userId: loginId });
                 const data = response.data.data;
                 // 등록 코드 저장
                 setRegisterKey(data.registerKey);
@@ -58,7 +58,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 const random       = crypto.randomUUID();
                 const newSessionId = crypto.randomUUID();
                 setSessionId(newSessionId);
-                const response = await customAxios.post("/passwordless/login-process", {
+                const response = await customAxios.post("/api/passwordless/login-process", {
                     userId: loginId, random, sessionId: newSessionId,
                 });
                 setServicePassword(response.data.data.servicePassword);

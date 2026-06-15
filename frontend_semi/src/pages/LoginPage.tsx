@@ -112,7 +112,7 @@ function LoginPage({ handleLoginSuccess }: AppRoutesProps) {
                     <button className="login-button" onClick={handleLogin}>로그인</button>
                     <p className="login-signup-text">
                         아직 회원이 아니신가요?{" "}
-                        <span className="login-signup-link" onClick={() => navigate("/members/signup")}>
+                        <span className="login-signup-link" onClick={() => navigate("/signup/terms")}>
                             회원가입
                         </span>
                     </p>
