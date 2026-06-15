@@ -24,6 +24,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
     const [sessionId, setSessionId] = useState("");
     const [registerKey, setRegisterKey] = useState("");
     const [timeLeft, setTimeLeft] = useState(180);
+    const [checkingResult, setCheckingResult] = useState(false);
 
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
@@ -157,7 +158,11 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         handleConfirm();
     };
 
- const handleResult = async () => {
+const handleResult = async () => {
+    if (checkingResult) {
+        return;
+    }
+
     if (isExpired) {
         alert("인증 시간이 만료됐습니다. 다시 시도해주세요.");
         setStep("input");
@@ -165,6 +170,8 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
     }
 
     try {
+        setCheckingResult(true);
+
         if (mode === "setting") {
             alert("Passwordless 등록이 완료됐습니다!");
             navigate("/");
@@ -179,12 +186,8 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
         const trimmedLoginId = loginId.trim();
 
-        console.log("result Axios 호출");
-        console.log("userId =", trimmedLoginId);
-        console.log("sessionId =", sessionId);
-
         const response = await axios.post(
-            `${API_BASE_URL}/api/passwordless/result`,
+            "/api/passwordless/result",
             {
                 userId: trimmedLoginId,
                 sessionId,
@@ -193,14 +196,6 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         );
 
         console.log("result 응답:", response.data);
-
-        /*
-         * auth == Y인 경우:
-         * 백엔드가 MemberLoginResponseDto를 바로 반환함.
-         *
-         * auth == W/N인 경우:
-         * 백엔드가 PasswordlessApiResponse<ResultResponseDto>를 반환함.
-         */
 
         const accessToken = response.data?.accessToken;
 
@@ -226,30 +221,36 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
             return;
         }
 
-        if (auth === "W") {
-            alert("아직 승인 대기 중입니다. 앱에서 승인해주세요.");
-            return;
-        }
-
         alert("인증 상태를 확인할 수 없습니다. 다시 시도해주세요.");
+        setStep("input");
     } catch (error: any) {
         console.error("Passwordless 결과 확인 실패:", error);
         alert(getErrorMessage(error));
         setStep("input");
+    } finally {
+        setCheckingResult(false);
     }
 };
 
-    useEffect(() => {
-        if (step !== "code" || timeLeft <= 0) {
-            return;
-        }
+useEffect(() => {
+    if (step !== "code") {
+        return;
+    }
 
-        const timer = setInterval(() => {
-            setTimeLeft((prev) => prev - 1);
-        }, 1000);
+    if (mode !== "login") {
+        return;
+    }
 
-        return () => clearInterval(timer);
-    }, [step, timeLeft]);
+    if (!sessionId) {
+        return;
+    }
+
+    if (!servicePassword) {
+        return;
+    }
+
+    handleResult();
+}, [step, mode, sessionId, servicePassword]);
 
     return (
         <div className="passwordless-page">
@@ -403,19 +404,30 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                                 </button>
                             )}
 
-                            <button
-                                type="button"
-                                className="passwordless-button"
-                                onClick={handleResult}
-                                disabled={isExpired}
-                                style={
-                                    isExpired
-                                        ? { opacity: 0.5, cursor: "not-allowed" }
-                                        : {}
-                                }
-                            >
-                                확인
-                            </button>
+{mode === "login" ? (
+    <button
+        type="button"
+        className="passwordless-button"
+        disabled
+        style={{ opacity: 0.7, cursor: "wait" }}
+    >
+        {checkingResult ? "앱 승인 대기 중..." : "승인 확인 준비 중..."}
+    </button>
+) : (
+    <button
+        type="button"
+        className="passwordless-button"
+        onClick={handleResult}
+        disabled={isExpired}
+        style={
+            isExpired
+                ? { opacity: 0.5, cursor: "not-allowed" }
+                : {}
+        }
+    >
+        확인
+    </button>
+)}
 
                             <button
                                 type="button"

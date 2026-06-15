@@ -1,6 +1,7 @@
 import MyPageSideBar from "../components/layout/MyPageSideBar";
 import { LEARNING_PROFILE_OPTIONS } from "../constants/memberProfile";
 import { useMyPage } from "../hooks/useMyPage";
+import customAxios from "../api/axiosInstance";
 import "./MyPage.css";
 
 // 컴포넌트 props 타입 추가
@@ -39,6 +40,32 @@ function MyPage({ handleLogout }: AppRoutesProps) {
         handleMemberInfoUpdate,
         handleMemberSignOff,
     } = useMyPage(handleLogout);
+
+    const handlePasswordlessWithdrawal = async () => {
+    const ok = window.confirm(
+        "Passwordless 등록을 해지하시겠습니까?\n해지 후에는 Passwordless 로그인을 다시 등록해야 사용할 수 있습니다."
+    );
+
+    if (!ok) {
+        return;
+    }
+
+    try {
+        await customAxios.post("/api/passwordless/my-withdrawal");
+
+        alert("Passwordless 등록이 해지되었습니다.");
+    } catch (error: any) {
+        console.error("Passwordless 해지 실패:", error);
+
+        const data = error.response?.data;
+        const message =
+            typeof data === "string"
+                ? data
+                : data?.message ?? "Passwordless 해지에 실패했습니다.";
+
+        alert(message);
+    }
+};
 
     // 회원 정보를 아직 서버에서 가져오는 중이면, 실제 폼 대신 로딩 문구를 먼저 보여줍니다.
     if (loading) {
@@ -288,6 +315,13 @@ function MyPage({ handleLogout }: AppRoutesProps) {
                                     {/* 수정 모드에서는 취소/저장 버튼, 조회 모드에서는 수정/비밀번호 변경 버튼을 보여줍니다. */}
                                     {isEditMode ? (
                                         <>
+                                           <button
+                                                type="button"
+                                                className="member-info-button danger"
+                                                onClick={handlePasswordlessWithdrawal}
+                                            >
+                                                Passwordless 해지
+                                            </button>
                                             <button
                                                 type="button"
                                                 className="member-info-button danger"

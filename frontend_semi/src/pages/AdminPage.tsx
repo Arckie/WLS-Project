@@ -180,7 +180,7 @@ function AdminPage({ user }: AppRoutesProps) {
 
     return (
         <div className="admin-page">
-            <MyPageSideBar />
+            <MyPageSideBar user={user} />
             <main className="admin-main">
                 <div className="admin-card">
                     <div className="admin-header">

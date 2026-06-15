@@ -55,7 +55,7 @@ public class PasswordlessService {
     // Result를 60초 동안 기다립니다.
     // 인증결과를 모바일로 부터 확인하고 기다리는 절차.
     public PasswordlessApiResponse<ResultResponseDto> result(ResultRequestDto request){
-        int maxTryCount = 60;
+        int maxTryCount = 180;
 
         for (int i = 0; i < maxTryCount; i++) {
             PasswordlessApiResponse<ResultResponseDto> response =

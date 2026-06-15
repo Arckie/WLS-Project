@@ -9,6 +9,7 @@ import com.backend_semi.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequiredArgsConstructor
@@ -178,5 +179,20 @@ public class PasswordlessController {
     ) {
         request.setServerKey(passwordlessProperties.getServerKey());
         return passwordlessService.WithdrawalAp(request);
+    }
+    // 로그인한 회원의 Passwordless 해지
+    @PostMapping("/my-withdrawal")
+    public ResponseEntity<?> withdrawalMyPasswordless(Authentication authentication) {
+        if (authentication == null || authentication.getDetails() == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+
+        String loginId = (String) authentication.getDetails();
+
+        IsApRequestDto request = new IsApRequestDto();
+        request.setUserId(loginId);
+        request.setServerKey(passwordlessProperties.getServerKey());
+
+        return ResponseEntity.ok(passwordlessService.WithdrawalAp(request));
     }
 }
