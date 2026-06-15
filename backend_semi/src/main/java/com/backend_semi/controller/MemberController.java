@@ -1,6 +1,7 @@
 package com.backend_semi.controller;
 
 import com.backend_semi.dto.*;
+import com.backend_semi.passwordless.dto.IsApRequestDto;
 import com.backend_semi.service.MemberService;
 import com.backend_semi.dto.MemberLoginRequestDto;
 import com.backend_semi.dto.MemberLoginResponseDto;
@@ -87,6 +88,14 @@ public class MemberController {
         memberService.deleteMember(loginId);
 
         return ResponseEntity.ok().build();
+    }
+
+    // Passwordless 로그인 엔드포인트
+    @PostMapping("/passwordless-login")
+    public ResponseEntity<MemberLoginResponseDto> passwordlessLogin(
+            @RequestBody IsApRequestDto request) {
+        MemberLoginResponseDto response = memberService.passwordlessLogin(request.getUserId());
+        return ResponseEntity.ok(response);
     }
 
 }

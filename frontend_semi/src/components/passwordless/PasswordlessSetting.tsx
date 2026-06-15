@@ -21,7 +21,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
     const [serverUrl, setServerUrl] = useState("");
     const [sessionId, setSessionId]           = useState("");
     const [registerKey, setRegisterKey]       = useState("");
-    const [timeLeft, setTimeLeft]             = useState(60);
+    const [timeLeft, setTimeLeft]             = useState(180);
 
     // 파생값
     const minutes   = Math.floor(timeLeft / 60);
@@ -63,7 +63,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 });
                 setServicePassword(response.data.data.servicePassword);
             }
-            setTimeLeft(60);
+            setTimeLeft(180);
             setStep("code");
 
         } catch (error: any) {
@@ -87,7 +87,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 return;
             }
 
-            const response = await customAxios.post("/passwordless/result", { userId: loginId, sessionId });
+            const response = await customAxios.post("/api/passwordless/result", { userId: loginId, sessionId });
             const auth     = response.data.data?.auth;
 
             if (auth === "Y") {
