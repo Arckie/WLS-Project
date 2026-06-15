@@ -68,7 +68,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/passwordless/login-process").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/passwordless/result").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/passwordless/cancel").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/passwordless/my-withdrawal").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/passwordless/withdrawalAp").authenticated()
 
                         // 2) 로그인하면 누구나 볼 수 있는 공개 조회들
                         // 비로그인 메인 화면(Home.tsx)에서도 호출되므로 permitAll로 열어둠

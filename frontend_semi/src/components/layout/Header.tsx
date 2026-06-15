@@ -156,6 +156,7 @@ function Header({ user, handleLogout }: HeaderProps) {
                 }}
               >
                 <span className="header-user-avatar">♙</span>
+                          {user.name}님
               </button>
 
               <button

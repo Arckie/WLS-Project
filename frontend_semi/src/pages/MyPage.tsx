@@ -51,7 +51,7 @@ function MyPage({ handleLogout }: AppRoutesProps) {
     }
 
     try {
-        await customAxios.post("/api/passwordless/my-withdrawal");
+        await customAxios.post("/api/passwordless/withdrawalAp");
 
         alert("Passwordless 등록이 해지되었습니다.");
     } catch (error: any) {

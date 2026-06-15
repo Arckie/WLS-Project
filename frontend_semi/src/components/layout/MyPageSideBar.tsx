@@ -13,7 +13,7 @@ function MyPageSideBar({ user }: MyPageSideBarProps) {
     const isMember = location.pathname === "/members/mypage";
     const isLearning = location.pathname === "/members/mypage/learning";
     const isFavorite = location.pathname === "/members/mypage/favorite";
-    const isAdminPage = location.pathname === "/admin";
+    const isAdminPage = location.pathname === "/members/admin";
 
     const isAdmin = user?.role === "ADMIN";
 
@@ -59,10 +59,10 @@ function MyPageSideBar({ user }: MyPageSideBarProps) {
                                 ? "mypage-menu active"
                                 : "mypage-menu"
                         }
-                        onClick={() => navigate("/admin")}
+                        onClick={() => navigate("/members/admin")}
                     >
                         <span>00</span>
-                        관리자
+                          관리자 콘솔
                     </button>
                 )}
 
