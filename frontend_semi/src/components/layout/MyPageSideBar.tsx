@@ -74,6 +74,16 @@ const bottomTitle = isAdmin
       </div>
 
       <div className="mypage-sidebar-menu-list">
+        {isAdmin &&(
+          <button
+            type="button"
+            className={isAdminPage ? "mypage-menu active" : "mypage-menu"}
+            onClick={()=>navigate("/admin")}
+          >
+            <span>00</span>
+             관리자
+            </button>  
+        )}
         <button
           type="button"
           className={isLearning ? "mypage-menu active" : "mypage-menu"}
@@ -100,17 +110,6 @@ const bottomTitle = isAdmin
           <span>03</span>
           즐겨찾기
         </button>
-
-        {isAdmin &&(
-          <button
-            type="button"
-            className={isAdminPage ? "mypage-menu active" : "mypage-menu"}
-            onClick={()=>navigate("/admin")}
-          >
-            <span>00</span>
-             관리자
-            </button>  
-        )}
       </div>
   
   //관리자 로그인시 문구 변경 

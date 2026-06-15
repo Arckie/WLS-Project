@@ -199,4 +199,4 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
     );
 }
 
-export default PasswordlessSetting;
+export default PasswordlessSetting; 
