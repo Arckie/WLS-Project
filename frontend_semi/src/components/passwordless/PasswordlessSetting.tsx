@@ -12,27 +12,30 @@ interface Props { handleLoginSuccess?: (user: User) => void; }
 
 function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
-    // State 
+    // State
     const [loginId, setLoginId]               = useState("");
     const [step, setStep]                     = useState<SetupStep>("input");
     const [errors, setErrors]                 = useState("");
     const [servicePassword, setServicePassword] = useState("");
+    const [qrDataUrl, setQrDataUrl] = useState("");
+    const [serverUrl, setServerUrl] = useState("");
     const [sessionId, setSessionId]           = useState("");
     const [registerKey, setRegisterKey]       = useState("");
     const [timeLeft, setTimeLeft]             = useState(60);
 
-    // 파생값 
+    // 파생값
     const minutes   = Math.floor(timeLeft / 60);
     const seconds   = timeLeft % 60;
     const isExpired = timeLeft <= 0;
     const timerText = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
-    // 라우터 
+    // 라우터
     const navigate = useNavigate();
     const location = useLocation();
-    const mode     = location.state?.mode ?? "login"; // "login" | "setting"
+    const mode     = location.state?.mode ?? "login";
+    console.log("현재 mode =", mode);// "login" | "setting"
 
-    // 확인 버튼 (아이디 입력 → 코드 화면으로) 
+    // 확인 버튼 (아이디 입력 → 코드 화면으로)
     const handleConfirm = async (event?: React.SyntheticEvent) => {
         event?.preventDefault();
         if (!loginId.trim()) { setErrors("아이디를 입력해 주세요."); return; }
@@ -43,7 +46,14 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         try {
             if (mode === "setting") {
                 const response = await customAxios.post("/passwordless/join-ap", { userId: loginId });
-                setRegisterKey(response.data.data.registerKey);
+                const data = response.data.data;
+                // 등록 코드 저장
+                setRegisterKey(data.registerKey);
+                // QR 이미지 저장
+                setQrDataUrl(data.qr);
+                // 서버 주소 저장
+                setServerUrl(data.serverUrl);
+
             } else {
                 const random       = crypto.randomUUID();
                 const newSessionId = crypto.randomUUID();
@@ -62,10 +72,10 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
             setErrors(typeof message === "string" ? message : "서버와 연결할 수 없습니다.");
         }
     };
-    //  재발급 버튼 (타이머 만료 후 재시도) 
+    //  재발급 버튼 (타이머 만료 후 재시도)
     const handleReissue = () => handleConfirm();
 
-    // 확인 버튼 (코드 화면 → 승인 확인) 
+    // 확인 버튼 (코드 화면 → 승인 확인)
     const handleResult = async () => {
         if (isExpired) { alert("인증 시간이 만료됐습니다. 다시 시도해주세요."); setStep("input"); return; }
 
@@ -81,7 +91,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
             const auth     = response.data.data?.auth;
 
             if (auth === "Y") {
-                const loginResponse           = await customAxios.post("/members/passwordless-login", { userId: loginId });
+                const loginResponse  = await customAxios.post("/members/passwordless-login", { userId: loginId });
                 const { accessToken, ...userData } = loginResponse.data;
                 localStorage.setItem("accessToken", accessToken);
                 if (handleLoginSuccess) handleLoginSuccess(userData);
@@ -101,14 +111,14 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         }
     };
 
-    // 타이머 (code 화면일 때 1초씩 감소) 
+    // 타이머 (code 화면일 때 1초씩 감소)
     useEffect(() => {
         if (step !== "code" || timeLeft <= 0) return;
         const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
         return () => clearInterval(timer);
     }, [step, timeLeft]);
 
-    //  렌더링 
+    //  렌더링
     return (
         <div className="passwordless-page">
             <div className="passwordless-box">
@@ -157,13 +167,32 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                     {/*  코드 표시 화면  */}
                     {step === "code" && (
                         <>
-                            <div className="phone-icon-box">📱</div>
-
+                            {mode === "login" && (<div className="phone-icon-box">📱</div>)}
                             {/* setting: registerKey 박스 표시 / login: 숫자코드 한 글자씩 표시 */}
                             {mode === "setting" ? (
                                 <>
-                                    <p className="passwordless-loading-title">앱에서 아래 코드를 확인 후 승인하세요!</p>
-                                    <div className="auth-register-key">{registerKey}</div>
+
+                                    {qrDataUrl && (
+                                        <div className="qr-container">
+                                            <img
+                                                src={qrDataUrl}
+                                                alt="QR Code"
+                                                className="passwordless-qr-image"/></div>)}
+
+                                    <div className="passwordless-info-box">
+                                    <p className="passwordless-loading-title">
+                                         스마트폰 앱에서 아래 QR 코드를 스캔하세요.</p>
+                                        <p>
+                                            <strong>서버 URL</strong>
+                                            <span>{serverUrl}</span>
+                                        </p>
+
+                                        <p>
+                                            <strong>등록 코드</strong>
+                                            <span>{registerKey}</span>
+                                        </p>
+
+                                    </div>
                                 </>
                             ) : (
                                 <>
