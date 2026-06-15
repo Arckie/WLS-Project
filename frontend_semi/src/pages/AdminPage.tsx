@@ -20,16 +20,13 @@ interface AdminMember {
     role: string;
 }
 
-interface AppRoutesProps {
+interface AdminPageProps {
     user: User | null;
 }
 
-function AdminPage({ user }: AppRoutesProps) {
-
-    // 관리자만 관리자페이지에 접근
+function AdminPage({ user }: AdminPageProps) {
     const navigate = useNavigate();
 
-    // localStorage의 role이 아니라 App에서 내려온 user 정보로 관리자 여부 판단
     const isAdmin = user?.role === "ADMIN";
 
     const [status, setStatus] = useState<AdminStatus | null>(null);
@@ -39,24 +36,21 @@ function AdminPage({ user }: AppRoutesProps) {
     const [currentPage, setCurrentPage] = useState(0);
     const [roleFilter, setRoleFilter] = useState("ALL");
 
-    // 비로그인 또는 일반회원 접근 금지
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
 
         if (!token) {
             alert("로그인이 필요합니다.");
-            navigate("/login", { replace: true });
+            navigate("/members/login", { replace: true });
             return;
         }
 
-        if (!isAdmin)
-        {
+        if (!isAdmin) {
             alert("관리자만 접근할 수 있습니다.");
             navigate("/", { replace: true });
         }
-    }, [user, navigate]);
+    }, [isAdmin, navigate]);
 
-    // 관리자 페이지 최초 진입 시 관리자 통계와 회원 목록을 조회
     useEffect(() => {
         if (isAdmin) {
             getAdminStatus();
@@ -64,18 +58,15 @@ function AdminPage({ user }: AppRoutesProps) {
         }
     }, [isAdmin]);
 
-    // 전체 회원 수, 오늘 가입자 수, 전체 강의 수 등의 관리자 통계 조회
     const getAdminStatus = async () => {
         try {
             const response = await customAxios.get("/api/admin");
             setStatus(response.data);
         } catch (error) {
-            console.error(error);
+            console.error("관리자 통계 조회 실패", error);
         }
     };
 
-    // 회원 목록 조회
-    // 검색어, 권한 필터, 페이지 번호를 조건으로 전달하여 조회
     const getMemberList = async (
         page = 0,
         role = roleFilter,
@@ -89,7 +80,7 @@ function AdminPage({ user }: AppRoutesProps) {
                 role?: string;
             } = {
                 page,
-                size: 10
+                size: 10,
             };
 
             if (searchKeyword.trim() !== "") {
@@ -100,80 +91,66 @@ function AdminPage({ user }: AppRoutesProps) {
                 params.role = role;
             }
 
-            const response = await customAxios.get("/api/admin/members", { params });
+            const response = await customAxios.get("/api/admin/members", {
+                params,
+            });
 
             setMembers(response.data.content || []);
             setTotalPages(response.data.totalPages || 0);
             setCurrentPage(response.data.number || 0);
-
         } catch (error) {
             console.error("회원 목록 조회 실패", error);
         }
     };
 
-    // 페이지 번호 클릭 시 해당 페이지 회원 목록 조회
     const onPageChange = (page: number) => {
         getMemberList(page, roleFilter, keyword);
     };
 
-    // 검색 버튼 클릭 시 입력한 아이디와 현재 필터 조건으로 조회
     const searchMember = () => {
         getMemberList(0, roleFilter, keyword);
     };
 
-    // 회원 권한(USER/ADMIN) 변경
     const changeMemberRole = async (memberId: number, role: string) => {
-
-        console.log("권한변경 클릭", memberId, role);
-
-        if (role === "") return false;
+        if (role === "") return;
 
         try {
-            await customAxios.put(
-                `/api/admin/members/${memberId}/role`,
-                { role }
-            );
+            await customAxios.put(`/api/admin/members/${memberId}/role`, {
+                role,
+            });
 
             setMembers((prevMembers) =>
                 prevMembers.map((member) =>
                     member.memberId === memberId
-                        ? { ...member, role: role }
+                        ? { ...member, role }
                         : member
                 )
             );
 
             getAdminStatus();
             alert("권한이 변경되었습니다.");
-
         } catch (error) {
             console.error("권한 변경 실패:", error);
-            return false;
         }
     };
 
-    // 회원 삭제
     const deleteMember = async (memberId: number) => {
-
         if (!window.confirm("회원을 탈퇴시키겠습니까?")) {
             return;
         }
 
         try {
-            await customAxios.delete(
-                `/api/admin/members/${memberId}`
-            );
+            await customAxios.delete(`/api/admin/members/${memberId}`);
 
             alert("회원이 삭제되었습니다.");
 
             getMemberList(currentPage, roleFilter, keyword);
             getAdminStatus();
-
         } catch (error) {
-            console.error(error);
+            console.error("회원 삭제 실패", error);
         }
     };
 
-    // 관리자가 아닌 경우 화면을 잠깐이라도 보여주지 않음
     if (!isAdmin) {
         return null;
     }
@@ -181,6 +158,7 @@ function AdminPage({ user }: AppRoutesProps) {
     return (
         <div className="admin-page">
             <MyPageSideBar user={user} />
+
             <main className="admin-main">
                 <div className="admin-card">
                     <div className="admin-header">
@@ -191,7 +169,6 @@ function AdminPage({ user }: AppRoutesProps) {
                         </div>
                     </div>
 
-                    {/* 회원상황 통계 */}
                     <section className="admin-status">
                         <div className="status-box">
                             <h4>전체 회원 수</h4>
@@ -214,16 +191,16 @@ function AdminPage({ user }: AppRoutesProps) {
                         </div>
                     </section>
 
-                    {/* 회원 목록 조회 */}
                     <section className="member-section">
                         <div className="member-search">
                             <input
                                 value={keyword}
-                                onChange={(e) => setKeyword(e.target.value)}
+                                onChange={(event) => setKeyword(event.target.value)}
                                 placeholder="아이디를 입력하세요."
                             />
 
                             <button
+                                type="button"
                                 className="search-btn"
                                 onClick={searchMember}
                             >
@@ -231,7 +208,12 @@ function AdminPage({ user }: AppRoutesProps) {
                             </button>
 
                             <button
-                                className={roleFilter === "ALL" ? "role-filter active" : "role-filter"}
+                                type="button"
+                                className={
+                                    roleFilter === "ALL"
+                                        ? "role-filter active"
+                                        : "role-filter"
+                                }
                                 onClick={() => {
                                     setRoleFilter("ALL");
                                     getMemberList(0, "ALL", keyword);
@@ -241,7 +223,12 @@ function AdminPage({ user }: AppRoutesProps) {
                             </button>
 
                             <button
-                                className={roleFilter === "ADMIN" ? "role-filter active" : "role-filter"}
+                                type="button"
+                                className={
+                                    roleFilter === "ADMIN"
+                                        ? "role-filter active"
+                                        : "role-filter"
+                                }
                                 onClick={() => {
                                     setRoleFilter("ADMIN");
                                     getMemberList(0, "ADMIN", keyword);
@@ -251,7 +238,12 @@ function AdminPage({ user }: AppRoutesProps) {
                             </button>
 
                             <button
-                                className={roleFilter === "USER" ? "role-filter active" : "role-filter"}
+                                type="button"
+                                className={
+                                    roleFilter === "USER"
+                                        ? "role-filter active"
+                                        : "role-filter"
+                                }
                                 onClick={() => {
                                     setRoleFilter("USER");
                                     getMemberList(0, "USER", keyword);
@@ -293,8 +285,8 @@ function AdminPage({ user }: AppRoutesProps) {
                                                     <select
                                                         className="role-select"
                                                         defaultValue=""
-                                                        onChange={async (e) => {
-                                                            const selectBox = e.currentTarget;
+                                                        onChange={async (event) => {
+                                                            const selectBox = event.currentTarget;
                                                             const selectedRole = selectBox.value;
 
                                                             await changeMemberRole(
@@ -313,8 +305,11 @@ function AdminPage({ user }: AppRoutesProps) {
                                                     </select>
 
                                                     <button
+                                                        type="button"
                                                         className="delete-btn"
-                                                        onClick={() => deleteMember(member.memberId)}
+                                                        onClick={() =>
+                                                            deleteMember(member.memberId)
+                                                        }
                                                     >
                                                         삭제
                                                     </button>
@@ -326,9 +321,9 @@ function AdminPage({ user }: AppRoutesProps) {
                             </tbody>
                         </table>
 
-                        {/* 페이징 */}
                         <div className="pagination">
                             <button
+                                type="button"
                                 className="page-btn"
                                 disabled={currentPage === 0}
                                 onClick={() => onPageChange(currentPage - 1)}
@@ -338,8 +333,13 @@ function AdminPage({ user }: AppRoutesProps) {
 
                             {Array.from({ length: totalPages }, (_, index) => (
                                 <button
+                                    type="button"
                                     key={index}
-                                    className={currentPage === index ? "page-btn active" : "page-btn"}
+                                    className={
+                                        currentPage === index
+                                            ? "page-btn active"
+                                            : "page-btn"
+                                    }
                                     onClick={() => onPageChange(index)}
                                 >
                                     {index + 1}
@@ -347,6 +347,7 @@ function AdminPage({ user }: AppRoutesProps) {
                             ))}
 
                             <button
+                                type="button"
                                 className="page-btn"
                                 disabled={currentPage >= totalPages - 1}
                                 onClick={() => onPageChange(currentPage + 1)}

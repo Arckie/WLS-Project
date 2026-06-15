@@ -52,9 +52,9 @@ public class PasswordlessService {
         return passwordlessWebClient.requestGetSp(request);
     }
 
-    // Result를 60초 동안 기다립니다.
+    // Result를 180초 동안 기다립니다.
     // 인증결과를 모바일로 부터 확인하고 기다리는 절차.
-    public PasswordlessApiResponse<ResultResponseDto> result(ResultRequestDto request){
+    public PasswordlessApiResponse<ResultResponseDto> result(ResultRequestDto request) {
         int maxTryCount = 180;
 
         for (int i = 0; i < maxTryCount; i++) {
@@ -71,20 +71,19 @@ public class PasswordlessService {
                 String auth = data.getAuth();
 
                 if ("Y".equals(auth)) {
-                    return response; // 승인
+                    return response;
                 }
 
                 if ("N".equals(auth)) {
-                    return response; // 반려
+                    return response;
                 }
 
                 if ("W".equals(auth)) {
                     sleepOneSecond();
-                    continue; // 대기중이면 다시 조회
+                    continue;
                 }
             }
 
-            // data가 없거나 auth가 없는데 code가 대기중인 경우도 대비
             if ("200.6".equals(response.getCode())) {
                 sleepOneSecond();
                 continue;

@@ -54,7 +54,11 @@ function MyPageSideBar({ user }: MyPageSideBarProps) {
                 {isAdmin && (
                     <button
                         type="button"
-                        className={isAdminPage ? "mypage-menu active" : "mypage-menu"}
+                        className={
+                            isAdminPage
+                                ? "mypage-menu active"
+                                : "mypage-menu"
+                        }
                         onClick={() => navigate("/admin")}
                     >
                         <span>00</span>
@@ -64,7 +68,11 @@ function MyPageSideBar({ user }: MyPageSideBarProps) {
 
                 <button
                     type="button"
-                    className={isLearning ? "mypage-menu active" : "mypage-menu"}
+                    className={
+                        isLearning
+                            ? "mypage-menu active"
+                            : "mypage-menu"
+                    }
                     onClick={() => navigate("/members/mypage/learning")}
                 >
                     <span>01</span>
@@ -73,7 +81,11 @@ function MyPageSideBar({ user }: MyPageSideBarProps) {
 
                 <button
                     type="button"
-                    className={isMember ? "mypage-menu active" : "mypage-menu"}
+                    className={
+                        isMember
+                            ? "mypage-menu active"
+                            : "mypage-menu"
+                    }
                     onClick={() => navigate("/members/mypage")}
                 >
                     <span>02</span>
@@ -82,7 +94,11 @@ function MyPageSideBar({ user }: MyPageSideBarProps) {
 
                 <button
                     type="button"
-                    className={isFavorite ? "mypage-menu active" : "mypage-menu"}
+                    className={
+                        isFavorite
+                            ? "mypage-menu active"
+                            : "mypage-menu"
+                    }
                     onClick={() => navigate("/members/mypage/favorite")}
                 >
                     <span>03</span>

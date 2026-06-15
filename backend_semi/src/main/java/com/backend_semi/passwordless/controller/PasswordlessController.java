@@ -9,7 +9,6 @@ import com.backend_semi.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.Authentication;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +20,6 @@ public class PasswordlessController {
     private final PasswordlessProperties passwordlessProperties;
     private final MemberService memberService;
 
-    // 가입 여부 확인
     @PostMapping("/is-ap")
     public PasswordlessApiResponse<IsApResponseDataDto> checkRegistration(
             @RequestBody IsApRequestDto request
@@ -30,7 +28,6 @@ public class PasswordlessController {
         return passwordlessService.isAp(request);
     }
 
-    // 등록 정보 요청
     @PostMapping("/join-ap")
     public ResponseEntity<?> registrationRequest(
             @RequestBody JoinApRequestDto request
@@ -44,38 +41,6 @@ public class PasswordlessController {
         return ResponseEntity.ok(passwordlessService.JoinAp(request));
     }
 
-    // 암호화된 일회용 토큰 요청
-    @PostMapping("/getTokenForOneTime")
-    public PasswordlessApiResponse<GetTokenForOneTimeResponseDto> getTokenForOneTime(
-            @RequestBody GetTokenForOneTimeRequestDto request
-    ) {
-        request.setServerKey(passwordlessProperties.getServerKey());
-        return passwordlessService.GetTokenForOneTime(request);
-    }
-
-    // 자동 패스워드 생성 요청
-    @PostMapping("/getSp")
-    public PasswordlessApiResponse<GetSpResponseDto> getSpRequest(
-            @RequestBody GetSpRequestDto request
-    ) {
-        request.setServerKey(passwordlessProperties.getServerKey());
-        return passwordlessService.GetSp(request);
-    }
-
-    /*
-     * Passwordless 로그인 시작
-     *
-     * 프론트에서 userId, random, sessionId를 보내면:
-     * 1. DB 회원 확인
-     * 2. Passwordless 등록 여부 확인
-     * 3. 일회용 token 요청
-     * 4. token 복호화
-     * 5. getSp 요청
-     *
-     * 중요:
-     * random/sessionId는 프론트가 보낸 값을 그대로 써야 한다.
-     * 여기서 새 UUID를 만들면 result 확인 때 sessionId가 안 맞는다.
-     */
     @PostMapping("/login-process")
     public ResponseEntity<?> loginProcess(
             @RequestBody GetSpRequestDto request
@@ -123,19 +88,16 @@ public class PasswordlessController {
         GetSpRequestDto spRequest = new GetSpRequestDto();
         spRequest.setUserId(request.getUserId());
         spRequest.setToken(tokenResponse.getData().getToken());
+
+        // 중요: 프론트가 보낸 random/sessionId를 그대로 사용
         spRequest.setRandom(request.getRandom());
         spRequest.setSessionId(request.getSessionId());
+
         spRequest.setServerKey(passwordlessProperties.getServerKey());
 
         return ResponseEntity.ok(passwordlessService.GetSp(spRequest));
     }
 
-    /*
-     * 모바일 승인 여부 확인
-     *
-     * auth == "Y"이면 여기서 바로 JWT를 발급해서 반환한다.
-     * 따라서 프론트에서 /api/members/passwordless-login을 따로 호출하지 않는다.
-     */
     @PostMapping("/result")
     public ResponseEntity<?> resultRequest(
             @RequestBody ResultRequestDto request
@@ -153,6 +115,7 @@ public class PasswordlessController {
 
         ResultResponseDto data = result.getData();
 
+        // 승인 완료면 여기서 바로 JWT 발급
         if (data != null && "Y".equals(data.getAuth())) {
             MemberLoginResponseDto loginResponse =
                     memberService.passwordlessLogin(request.getUserId());
@@ -160,10 +123,10 @@ public class PasswordlessController {
             return ResponseEntity.ok(loginResponse);
         }
 
+        // 거절/대기/기타 상태는 원본 응답 반환
         return ResponseEntity.ok(result);
     }
 
-    // 인증 취소
     @PostMapping("/cancel")
     public CancelResponseDto cancelRequest(
             @RequestBody CancelRequestDto request
@@ -172,27 +135,11 @@ public class PasswordlessController {
         return passwordlessService.Cancel(request);
     }
 
-    // 해지 요청
     @PostMapping("/withdrawalAp")
     public CancelResponseDto withdrawalApRequest(
             @RequestBody IsApRequestDto request
     ) {
         request.setServerKey(passwordlessProperties.getServerKey());
         return passwordlessService.WithdrawalAp(request);
-    }
-    // 로그인한 회원의 Passwordless 해지
-    @PostMapping("/my-withdrawal")
-    public ResponseEntity<?> withdrawalMyPasswordless(Authentication authentication) {
-        if (authentication == null || authentication.getDetails() == null) {
-            return ResponseEntity.status(401).body("로그인이 필요합니다.");
-        }
-
-        String loginId = (String) authentication.getDetails();
-
-        IsApRequestDto request = new IsApRequestDto();
-        request.setUserId(loginId);
-        request.setServerKey(passwordlessProperties.getServerKey());
-
-        return ResponseEntity.ok(passwordlessService.WithdrawalAp(request));
     }
 }
