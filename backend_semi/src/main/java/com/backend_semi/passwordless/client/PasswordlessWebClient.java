@@ -5,14 +5,17 @@ import com.backend_semi.passwordless.dto.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
-import software.amazon.awssdk.core.internal.http.pipeline.RequestToResponsePipeline;
 
 @Component
+@Getter
+@Setter
 public class PasswordlessWebClient {
 
     private final WebClient webClient;
