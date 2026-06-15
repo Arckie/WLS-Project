@@ -69,6 +69,7 @@ public class SecurityConfig {
                         // 2) 로그인하면 누구나 볼 수 있는 공개 조회들
                         // 비로그인 메인 화면(Home.tsx)에서도 호출되므로 permitAll로 열어둠
                         // 원래 "/api/lecture/list" 이거는 회원들만 보여줘야하는데 Home.tsx에 사용중이여서 넣음
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/lecture/list").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/notices").permitAll()
 
