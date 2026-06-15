@@ -9,4 +9,5 @@ import lombok.Setter;
 public class CancelRequestDto {
     private String userId;
     private String sessionId;
+    private String serverKey;
 }

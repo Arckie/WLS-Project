@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class GetTokenForOneTimeRequestDto {
     private String userId;
+    private String serverKey;
 }

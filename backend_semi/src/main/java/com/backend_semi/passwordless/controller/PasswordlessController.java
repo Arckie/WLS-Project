@@ -1,5 +1,6 @@
 package com.backend_semi.passwordless.controller;
 
+import com.backend_semi.passwordless.config.PasswordlessProperties;
 import com.backend_semi.passwordless.dto.*;
 import com.backend_semi.passwordless.service.PasswordlessService;
 import com.backend_semi.repository.MemberRepository;
@@ -19,10 +20,13 @@ public class PasswordlessController {
 
     private final PasswordlessService passwordlessService;
     private final MemberRepository memberRepository; // DB 회원 체크용
+    private final PasswordlessProperties passwordlessProperties;
+
 
     // 가입여부
     @PostMapping("/is-ap")
     public PasswordlessApiResponse<IsApResponseDataDto> checkRegistration(@RequestBody IsApRequestDto request){
+        request.setServerKey(passwordlessProperties.getServerKey());
         return passwordlessService.isAp(request);
     }
 
@@ -33,18 +37,23 @@ public class PasswordlessController {
         if (!memberRepository.existsByLoginId(request.getUserId())) {
             return ResponseEntity.badRequest().body("존재하지 않는 아이디입니다.");
         }
+        request.setServerKey(passwordlessProperties.getServerKey());
+        System.out.println("serverKey: " + request.getServerKey()); // 추가
+        System.out.println("userId: " + request.getUserId()); // 추가
         return ResponseEntity.ok(passwordlessService.JoinAp(request));
     }
 
     // 암호화된 일회용 토큰요청
     @PostMapping("/getTokenForOneTime")
     public PasswordlessApiResponse<GetTokenForOneTimeResponseDto> getTokenForOneTime(@RequestBody GetTokenForOneTimeRequestDto request){
+        request.setServerKey(passwordlessProperties.getServerKey());
         return passwordlessService.GetTokenForOneTime(request);
     }
 
     // 자동패스워드 생성 요청 -> 인증 요청
     @PostMapping("/getSp")
     public PasswordlessApiResponse<GetSpResponseDto> getSpRequest(@RequestBody GetSpRequestDto request){
+        request.setServerKey(passwordlessProperties.getServerKey());
         return passwordlessService.GetSp(request);
     }
 
@@ -57,12 +66,14 @@ public class PasswordlessController {
     // 인증 취소
     @PostMapping("/cancel")
     public CancelResponseDto cancelRequest(@RequestBody CancelRequestDto request){
+        request.setServerKey(passwordlessProperties.getServerKey());
         return passwordlessService.Cancel(request);
     }
 
     // 해지 요청
     @PostMapping("/withdrawalAp")
     public CancelResponseDto withdrawalApRequest(@RequestBody IsApRequestDto request){
+        request.setServerKey(passwordlessProperties.getServerKey());
         return passwordlessService.WithdrawalAp(request);
     }
 
@@ -75,6 +86,7 @@ public class PasswordlessController {
         }
 
         // 2. Passwordless 등록 여부 확인
+        request.setServerKey(passwordlessProperties.getServerKey()); // 추가
         PasswordlessApiResponse<IsApResponseDataDto> isApResponse =
                 passwordlessService.isAp(request);
 
@@ -88,6 +100,7 @@ public class PasswordlessController {
         // 3. 토큰 요청
         GetTokenForOneTimeRequestDto tokenRequest = new GetTokenForOneTimeRequestDto();
         tokenRequest.setUserId(request.getUserId());
+        tokenRequest.setServerKey(passwordlessProperties.getServerKey()); // 추가
         PasswordlessApiResponse<GetTokenForOneTimeResponseDto> tokenResponse =
                 passwordlessService.GetTokenForOneTime(tokenRequest);
 
@@ -97,6 +110,7 @@ public class PasswordlessController {
         spRequest.setToken(tokenResponse.getData().getToken());
         spRequest.setRandom(UUID.randomUUID().toString());
         spRequest.setSessionId(UUID.randomUUID().toString());
+        spRequest.setServerKey(passwordlessProperties.getServerKey()); // 추가
 
         return ResponseEntity.ok(passwordlessService.GetSp(spRequest));
     }

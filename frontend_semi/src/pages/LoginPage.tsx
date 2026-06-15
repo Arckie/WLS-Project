@@ -30,7 +30,7 @@ function LoginPage({ handleLoginSuccess }: AppRoutesProps) {
         console.log('로그인 시도중입니다.');
 
         try {
-            const url = "/members/login";
+            const url = "/api/members/login";
             const params = { loginId, password }; // 파라미터
             const config = {
                 headers: { // 헤더에 MIME type 적어서 요청

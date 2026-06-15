@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import software.amazon.awssdk.core.internal.http.pipeline.RequestToResponsePipeline;
+
 
 @Component
 public class PasswordlessWebClient {
@@ -23,6 +25,8 @@ public class PasswordlessWebClient {
     ) {
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getAuthServerUrl())
+//                .defaultHeader("serverId", properties.getServerId())      // 추가
+//                .defaultHeader("serverKey", properties.getServerKey())
                 .build();
 
         this.objectMapper = objectMapper;
@@ -65,6 +69,8 @@ public class PasswordlessWebClient {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+
+
 
         if (responseBody == null || responseBody.isBlank()) {
             throw new IllegalStateException("Passwordless 서버 응답 Body가 비어 있습니다.");

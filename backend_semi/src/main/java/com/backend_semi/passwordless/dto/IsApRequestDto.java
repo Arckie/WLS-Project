@@ -8,4 +8,5 @@ import lombok.Setter;
 public class IsApRequestDto {
     //withdrawalAp와 함께 사용합니다.
     private String userId;
+    private String serverKey;
 }
