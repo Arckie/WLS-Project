@@ -370,7 +370,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                                 아직 회원이 아니신가요?{" "}
                                 <span
                                     className="passwordless-signup-link"
-                                    onClick={() => navigate("/members/signup")}
+                                    onClick={() => navigate("/signup/terms")}
                                 >
                                     회원가입
                                 </span>
