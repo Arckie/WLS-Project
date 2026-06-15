@@ -23,7 +23,7 @@ interface AppRoutesProps {
     user: User | null;
 }
 
-function AdminPage({user}:AppRoutesProps) {
+function AdminPage({ user }: AppRoutesProps) {
 
     // 관리자만 관리자페이지에 접근
     const navigate = useNavigate();
@@ -48,7 +48,8 @@ function AdminPage({user}:AppRoutesProps) {
             return;
         }
 
-        if (user && user.role !== "ADMIN") {
+        if (!isAdmin)
+        {
             alert("관리자만 접근할 수 있습니다.");
             navigate("/", { replace: true });
         }
