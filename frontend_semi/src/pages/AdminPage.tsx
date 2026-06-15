@@ -28,34 +28,6 @@ interface AdminPageProps {
 function AdminPage({ user }: AdminPageProps) {
     const navigate = useNavigate();
 
-    const getRoleFromToken = () => {
-        const token = localStorage.getItem("accessToken");
-
-        if (!token) {
-            return null;
-        }
-
-        try {
-            const payloadBase64 = token.split(".")[1];
-
-            if (!payloadBase64) {
-                return null;
-            }
-
-            const payloadJson = atob(
-                payloadBase64.replace(/-/g, "+").replace(/_/g, "/")
-            );
-
-            const payload = JSON.parse(payloadJson);
-
-            return payload.role ?? null;
-        } catch (error) {
-            console.error("JWT role 파싱 실패:", error);
-            return null;
-        }
-    };
-
-    const tokenRole = getRoleFromToken();
     const isAdmin = user?.role === "ADMIN" || isAdminFromToken();
 
     const [status, setStatus] = useState<AdminStatus | null>(null);
