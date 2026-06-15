@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import customAxios from "../api/axiosInstance";
 import "./AdminPage.css";
 import type { User } from "../types/User";
+import MyPageSideBar from "../components/layout/MyPageSideBar";
 
 interface AdminStatus {
     totalMemberCount: number;
@@ -179,6 +180,7 @@ function AdminPage({ user }: AppRoutesProps) {
 
     return (
         <div className="admin-page">
+            <MyPageSideBar />
             <main className="admin-main">
                 <div className="admin-card">
                     <div className="admin-header">

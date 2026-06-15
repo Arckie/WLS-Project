@@ -1,23 +1,28 @@
 .admin-page {
     width: 100%;
+    margin-top: 90px;
     min-height: calc(100vh - 72px);
-    margin-top: 85px;
     background: #f4f8ff;
+    box-sizing: border-box;
 }
 
 .admin-main {
-    width:100%;
-    max-width: 2000px;
-    margin: 0 auto;
-    padding: 24px 40px;
+    min-height: calc(100vh - 72px);
+    margin-left: 320px;
+    padding: 24px 32px;
+    box-sizing: border-box;
+    background: #f4f8ff;
 }
 
 .admin-card {
-    background: #fff;
-    border: 1px solid #dce8fb;
-    border-radius: 20px;
-    padding: 32px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    min-height: 100%;
+    padding: 26px 30px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #d7e4f7;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0, 70, 150, 0.07);
     overflow-x: auto;
 }
 

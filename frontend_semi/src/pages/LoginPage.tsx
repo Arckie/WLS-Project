@@ -45,6 +45,7 @@ function LoginPage({ handleLoginSuccess }: AppRoutesProps) {
             // localStorage에는 문자열만 들어갈 수 있음
             // 전개 연산자로 변수로 가져온 accessToken은 바로 넣을 수 있음
             localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("role", userData.role);
 
             console.log('로그인 성공 사용자 : ' + userData);
 
@@ -63,9 +64,13 @@ function LoginPage({ handleLoginSuccess }: AppRoutesProps) {
             // 로그인이 되면 메인 홈페이지로 이동시킴
             // navigate("/"); 기존 부분을 밑의 것으로 수정 
             // 관리자로 로그인시 관리자페이지로 이동 YJ
+
+            // 일반인이 로그인페이지에서 로그인 시 홈으로 넘어가지 않아서 else 추가 
             if(userData.role === "ADMIN"){
                  navigate("/");
-            } // 2차 수정 
+            } else {
+                 navigate("/");
+        } 
 
 
 
