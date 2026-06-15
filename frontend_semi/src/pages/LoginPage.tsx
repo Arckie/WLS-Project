@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import customAxios from "../api/axiosInstance";
-import "./LoginPage";
+import "./LoginPage.css";
 import type { LoginResponse, User } from "../types/User";
 import { Alert } from "react-bootstrap";
 import {
