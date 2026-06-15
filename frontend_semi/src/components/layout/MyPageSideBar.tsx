@@ -1,22 +1,22 @@
 import "./MyPageSideBar.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { User } from "../../types/User";
+import { isAdminFromToken } from "../../utils/authUtils";
 
 interface MyPageSideBarProps {
     user?: User | null;
-    fallbackRole?: string | null;
 }
 
-function MyPageSideBar({ user, fallbackRole }: MyPageSideBarProps) {
+function MyPageSideBar({ user }: MyPageSideBarProps) {
     const navigate = useNavigate();
     const location = useLocation();
+
+    const isAdmin = user?.role === "ADMIN" || isAdminFromToken();
 
     const isMember = location.pathname === "/members/mypage";
     const isLearning = location.pathname === "/members/mypage/learning";
     const isFavorite = location.pathname === "/members/mypage/favorite";
     const isAdminPage = location.pathname === "/admin";
-
-    const isAdmin = user?.role === "ADMIN" || fallbackRole === "ADMIN";
 
     const bottomImage = isAdminPage
         ? "/mypage-admin.svg"

@@ -39,3 +39,29 @@ export const isJwtExpired = (token: string) => {
 
   return payload.exp <= now;
 };
+
+export const getRoleFromToken = (): string | null => {
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) {
+    return null;
+  }
+
+  if (isJwtExpired(token)) {
+    return null;
+  }
+
+  const payload = decodeJwtPayload(token);
+
+  if (typeof payload?.role === "string") {
+    return payload.role;
+  }
+
+  return null;
+};
+
+export const isAdminFromToken = (): boolean => {
+  const role = getRoleFromToken();
+
+  return role === "ADMIN" || role === "ROLE_ADMIN";
+};

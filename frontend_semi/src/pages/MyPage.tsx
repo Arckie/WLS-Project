@@ -1,21 +1,15 @@
 import MyPageSideBar from "../components/layout/MyPageSideBar";
 import { LEARNING_PROFILE_OPTIONS } from "../constants/memberProfile";
 import { useMyPage } from "../hooks/useMyPage";
-import customAxios from "../api/axiosInstance";
+import axios from "axios";
 import "./MyPage.css";
+import { API_BASE_URL } from "../config/config";
 
-// 컴포넌트 props 타입 추가
 type AppRoutesProps = {
     handleLogout: (event?: React.MouseEvent<HTMLElement>) => void;
 };
 
-
 function MyPage({ handleLogout }: AppRoutesProps) {
-    /*
-      useMyPage는 마이페이지에서 필요한 상태와 이벤트 함수를 모아둔 커스텀 훅입니다.
-      이 파일(MyPage.tsx)은 화면을 그리는 역할에 집중하고,
-      API 호출/검증/수정 모드 전환 같은 동작은 hooks/useMyPage.ts에서 관리합니다.
-    */
     const {
         memberInfo,
         loading,
@@ -41,38 +35,65 @@ function MyPage({ handleLogout }: AppRoutesProps) {
         handleMemberSignOff,
     } = useMyPage(handleLogout);
 
-    const handlePasswordlessWithdrawal = async () => {
-    const ok = window.confirm(
-        "Passwordless 등록을 해지하시겠습니까?\n해지 후에는 Passwordless 로그인을 다시 등록해야 사용할 수 있습니다."
-    );
-
-    if (!ok) {
-        return;
-    }
-
-    try {
-        await customAxios.post("/passwordless/withdrawalAp");
-
-        alert("Passwordless 등록이 해지되었습니다.");
-    } catch (error: any) {
-        console.error("Passwordless 해지 실패:", error);
-
+    const getAxiosErrorMessage = (error: any) => {
         const data = error.response?.data;
-        const message =
-            typeof data === "string"
-                ? data
-                : data?.message ?? "Passwordless 해지에 실패했습니다.";
 
-        alert(message);
-    }
-};
+        if (typeof data === "string") {
+            return data;
+        }
 
-    // 회원 정보를 아직 서버에서 가져오는 중이면, 실제 폼 대신 로딩 문구를 먼저 보여줍니다.
+        if (data?.message) {
+            return data.message;
+        }
+
+        if (error.message) {
+            return error.message;
+        }
+
+        return "요청 처리 중 오류가 발생했습니다.";
+    };
+
+    const handlePasswordlessWithdrawal = async () => {
+        const ok = window.confirm(
+            "Passwordless 등록을 해지하시겠습니까?\n해지 후에는 Passwordless 로그인을 다시 등록해야 사용할 수 있습니다."
+        );
+
+        if (!ok) {
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem("accessToken");
+
+            if (!token) {
+                alert("로그인이 필요합니다.");
+                return;
+            }
+
+            await axios.post(
+                `${API_BASE_URL}/api/passwordless/my-withdrawal`,
+                {},
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: false,
+                }
+            );
+
+            alert("Passwordless 등록이 해지되었습니다.");
+        } catch (error: any) {
+            console.error("Passwordless 해지 실패:", error);
+            alert(getAxiosErrorMessage(error));
+        }
+    };
+
     if (loading) {
         return <div className="mypage-main">회원정보를 불러오는 중입니다...</div>;
     }
 
-    // 로딩은 끝났지만 회원 정보가 없다면, 아래 JSX에서 null 접근 오류가 나지 않도록 여기서 종료합니다.
     if (memberInfo === null) {
         return <div className="mypage-main">회원정보가 없습니다!</div>;
     }
@@ -92,7 +113,6 @@ function MyPage({ handleLogout }: AppRoutesProps) {
                             </div>
 
                             <form className="member-info-form">
-                                {/* 아이디와 이름은 수정 대상이 아니므로 항상 읽기 전용(readOnly)입니다. */}
                                 <div className="member-form-row">
                                     <label>아이디</label>
                                     <input
@@ -114,12 +134,10 @@ function MyPage({ handleLogout }: AppRoutesProps) {
                                     />
                                 </div>
 
-                                {/* 비밀번호 입력 영역은 조회 모드와 수정 모드에서 모두 사용할 수 있습니다. */}
                                 <div className="member-password-area">
                                     <label>비밀번호</label>
 
                                     <div className="member-password-fields password-change-fields">
-                                        {/* 현재 비밀번호: 비밀번호 변경/회원정보 저장 시 본인 확인용으로 사용합니다. */}
                                         <div className="member-password-input-group member-password-current">
                                             <input
                                                 className="member-info-input"
@@ -138,7 +156,6 @@ function MyPage({ handleLogout }: AppRoutesProps) {
                                             )}
                                         </div>
 
-                                        {/* 새 비밀번호: 입력값이 규칙에 맞지 않으면 CSS 클래스로 빨간 테두리를 표시합니다. */}
                                         <div className="member-password-input-group">
                                             <input
                                                 className={
@@ -167,7 +184,6 @@ function MyPage({ handleLogout }: AppRoutesProps) {
                                             )}
                                         </div>
 
-                                        {/* 새 비밀번호 확인: 새 비밀번호와 같은지 비교해 성공/오류 안내 문구를 보여줍니다. */}
                                         <div className="member-password-input-group">
                                             <input
                                                 className={
@@ -214,7 +230,6 @@ function MyPage({ handleLogout }: AppRoutesProps) {
                                     </div>
                                 </div>
 
-                                {/* 수정 모드일 때는 memberUpdateForm 값을 보여주고, 조회 모드일 때는 서버에서 받은 memberInfo 값을 보여줍니다. */}
                                 <div className="member-form-row">
                                     <label>이메일</label>
                                     <input
@@ -231,7 +246,6 @@ function MyPage({ handleLogout }: AppRoutesProps) {
                                     />
                                 </div>
 
-                                {/* 전화번호는 useMyPage 내부에서 숫자 입력을 010-0000-0000 형태로 정리합니다. */}
                                 <div className="member-form-row">
                                     <label>전화번호</label>
                                     <input
@@ -249,7 +263,6 @@ function MyPage({ handleLogout }: AppRoutesProps) {
                                     />
                                 </div>
 
-                                {/* type="date"는 브라우저 기본 날짜 선택 UI를 사용합니다. */}
                                 <div className="member-form-row">
                                     <label>생년월일</label>
                                     <input
@@ -270,11 +283,6 @@ function MyPage({ handleLogout }: AppRoutesProps) {
                                     <label>관심학습분야</label>
 
                                     <div className="member-learning-box">
-                                        {/*
-                                          수정 모드: 체크박스로 관심 분야를 고릅니다.
-                                          조회 모드: 저장된 관심 분야를 칩 형태로 보여줍니다.
-                                          저장된 관심 분야가 없으면 빈 상태 문구를 보여줍니다.
-                                        */}
                                         {isEditMode ? (
                                             LEARNING_PROFILE_OPTIONS.map((profile) => (
                                                 <label
@@ -312,16 +320,16 @@ function MyPage({ handleLogout }: AppRoutesProps) {
                                 </div>
 
                                 <div className="member-info-actions">
-                                    {/* 수정 모드에서는 취소/저장 버튼, 조회 모드에서는 수정/비밀번호 변경 버튼을 보여줍니다. */}
                                     {isEditMode ? (
                                         <>
-                                           <button
+                                            <button
                                                 type="button"
                                                 className="member-info-button danger"
                                                 onClick={handlePasswordlessWithdrawal}
                                             >
                                                 Passwordless 해지
                                             </button>
+
                                             <button
                                                 type="button"
                                                 className="member-info-button danger"

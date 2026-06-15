@@ -4,6 +4,7 @@ import customAxios from "../api/axiosInstance";
 import "./AdminPage.css";
 import type { User } from "../types/User";
 import MyPageSideBar from "../components/layout/MyPageSideBar";
+import { isAdminFromToken } from "../utils/authUtils";
 
 interface AdminStatus {
     totalMemberCount: number;
@@ -55,7 +56,7 @@ function AdminPage({ user }: AdminPageProps) {
     };
 
     const tokenRole = getRoleFromToken();
-    const isAdmin = user?.role === "ADMIN" || tokenRole === "ADMIN";
+    const isAdmin = user?.role === "ADMIN" || isAdminFromToken();
 
     const [status, setStatus] = useState<AdminStatus | null>(null);
     const [members, setMembers] = useState<AdminMember[]>([]);
@@ -185,7 +186,7 @@ function AdminPage({ user }: AdminPageProps) {
 
     return (
         <div className="admin-page">
-            <MyPageSideBar user={user} fallbackRole={tokenRole} />
+            <MyPageSideBar user={user} />
 
             <main className="admin-main">
                 <div className="admin-card">
