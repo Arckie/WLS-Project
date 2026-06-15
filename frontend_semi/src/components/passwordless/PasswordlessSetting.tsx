@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import customAxios from "../../api/axiosInstance";
+import axios from "axios";
 import { Settings } from "lucide-react";
 import { Alert } from "react-bootstrap";
 import "./PasswordlessSetting.css";
 import type { User } from "../../types/User";
+import { API_BASE_URL } from "../../config/config";
 
 type SetupStep = "input" | "loading" | "code";
 
@@ -33,6 +34,14 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
     const location = useLocation();
 
     const mode = location.state?.mode ?? "login";
+
+    const axiosConfig = {
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        withCredentials: false,
+    };
 
     const makeId = () => {
         if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
@@ -81,9 +90,13 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
             if (mode === "setting") {
                 console.log("Passwordless setting 분기 진입");
 
-                const response = await customAxios.post("/api/passwordless/join-ap", {
-                    userId: trimmedLoginId,
-                });
+                const response = await axios.post(
+                    `${API_BASE_URL}/api/passwordless/join-ap`,
+                    {
+                        userId: trimmedLoginId,
+                    },
+                    axiosConfig
+                );
 
                 console.log("join-ap 응답:", response.data);
 
@@ -109,11 +122,15 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
                 console.log("login-process Axios 호출 직전");
 
-                const response = await customAxios.post("/api/passwordless/login-process", {
-                    userId: trimmedLoginId,
-                    random,
-                    sessionId: newSessionId,
-                });
+                const response = await axios.post(
+                    `${API_BASE_URL}/api/passwordless/login-process`,
+                    {
+                        userId: trimmedLoginId,
+                        random,
+                        sessionId: newSessionId,
+                    },
+                    axiosConfig
+                );
 
                 console.log("login-process 응답:", response.data);
 
@@ -150,7 +167,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         try {
             if (mode === "setting") {
                 alert("Passwordless 등록이 완료됐습니다!");
-                navigate("/");
+                navigate("/members/login");
                 return;
             }
 
@@ -166,10 +183,14 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
             console.log("userId =", trimmedLoginId);
             console.log("sessionId =", sessionId);
 
-            const response = await customAxios.post("/api/passwordless/result", {
-                userId: trimmedLoginId,
-                sessionId,
-            });
+            const response = await axios.post(
+                `${API_BASE_URL}/api/passwordless/result`,
+                {
+                    userId: trimmedLoginId,
+                    sessionId,
+                },
+                axiosConfig
+            );
 
             console.log("result 응답:", response.data);
 
@@ -178,9 +199,13 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
             if (auth === "Y") {
                 console.log("Passwordless 승인 완료. 내부 로그인 요청 시작");
 
-                const loginResponse = await customAxios.post("/api/members/passwordless-login", {
-                    userId: trimmedLoginId,
-                });
+                const loginResponse = await axios.post(
+                    "/api/members/passwordless-login",
+                    {
+                        userId: trimmedLoginId,
+                    },
+                    axiosConfig
+                );
 
                 console.log("passwordless-login 응답:", loginResponse.data);
 
