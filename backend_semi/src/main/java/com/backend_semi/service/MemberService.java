@@ -96,7 +96,7 @@ public class MemberService {
         return new MemberLoginResponseDto(
                 accessToken,
                 member.getMemberId(),
-                member.getRole().name(),
+                member.getRole(),
                 member.getLoginId(),
                 member.getEmail(),
                 member.getName(),
@@ -291,7 +291,7 @@ public class MemberService {
         return new MemberLoginResponseDto(
                 accessToken,
                 member.getMemberId(),
-                member.getRole().name(),
+                member.getRole(),
                 member.getLoginId(),
                 member.getEmail(),
                 member.getName(),

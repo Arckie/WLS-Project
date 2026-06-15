@@ -1,5 +1,6 @@
 package com.backend_semi.dto;
 
+import com.backend_semi.constant.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,7 +9,7 @@ import lombok.Getter;
 public class MemberLoginResponseDto {
     private String accessToken;
     private Long memberId;
-    private String Role;
+    private Role role;
     private String loginId;
     private String email;
     private String name;

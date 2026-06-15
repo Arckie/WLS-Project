@@ -4,18 +4,19 @@ import type { User } from "../../types/User";
 
 interface MyPageSideBarProps {
     user?: User | null;
+    fallbackRole?: string | null;
 }
 
-function MyPageSideBar({ user }: MyPageSideBarProps) {
+function MyPageSideBar({ user, fallbackRole }: MyPageSideBarProps) {
     const navigate = useNavigate();
     const location = useLocation();
 
     const isMember = location.pathname === "/members/mypage";
     const isLearning = location.pathname === "/members/mypage/learning";
     const isFavorite = location.pathname === "/members/mypage/favorite";
-    const isAdminPage = location.pathname === "/members/admin";
+    const isAdminPage = location.pathname === "/admin";
 
-    const isAdmin = user?.role === "ADMIN";
+    const isAdmin = user?.role === "ADMIN" || fallbackRole === "ADMIN";
 
     const bottomImage = isAdminPage
         ? "/mypage-admin.svg"
@@ -54,25 +55,17 @@ function MyPageSideBar({ user }: MyPageSideBarProps) {
                 {isAdmin && (
                     <button
                         type="button"
-                        className={
-                            isAdminPage
-                                ? "mypage-menu active"
-                                : "mypage-menu"
-                        }
-                        onClick={() => navigate("/members/admin")}
+                        className={isAdminPage ? "mypage-menu active" : "mypage-menu"}
+                        onClick={() => navigate("/admin")}
                     >
                         <span>00</span>
-                          관리자 콘솔
+                        관리자
                     </button>
                 )}
 
                 <button
                     type="button"
-                    className={
-                        isLearning
-                            ? "mypage-menu active"
-                            : "mypage-menu"
-                    }
+                    className={isLearning ? "mypage-menu active" : "mypage-menu"}
                     onClick={() => navigate("/members/mypage/learning")}
                 >
                     <span>01</span>
@@ -81,11 +74,7 @@ function MyPageSideBar({ user }: MyPageSideBarProps) {
 
                 <button
                     type="button"
-                    className={
-                        isMember
-                            ? "mypage-menu active"
-                            : "mypage-menu"
-                    }
+                    className={isMember ? "mypage-menu active" : "mypage-menu"}
                     onClick={() => navigate("/members/mypage")}
                 >
                     <span>02</span>
@@ -94,11 +83,7 @@ function MyPageSideBar({ user }: MyPageSideBarProps) {
 
                 <button
                     type="button"
-                    className={
-                        isFavorite
-                            ? "mypage-menu active"
-                            : "mypage-menu"
-                    }
+                    className={isFavorite ? "mypage-menu active" : "mypage-menu"}
                     onClick={() => navigate("/members/mypage/favorite")}
                 >
                     <span>03</span>

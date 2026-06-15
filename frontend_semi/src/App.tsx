@@ -37,6 +37,7 @@ function App() {
 
   const handleLoginSuccess = (userData: User) => { // LoginPage를 통해 로그인했을때 setUser 관리
     setUser(userData);
+    console.log(userData);
     // 이제 로컬용이 아니고 배포도 해야해서 로컬스토리지에 유저 정보를 보여주지 않음
     // localStorage.setItem('user', JSON.stringify(userData));
     console.log('로그인 성공');

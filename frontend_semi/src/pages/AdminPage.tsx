@@ -27,7 +27,35 @@ interface AdminPageProps {
 function AdminPage({ user }: AdminPageProps) {
     const navigate = useNavigate();
 
-    const isAdmin = user?.role === "ADMIN";
+    const getRoleFromToken = () => {
+        const token = localStorage.getItem("accessToken");
+
+        if (!token) {
+            return null;
+        }
+
+        try {
+            const payloadBase64 = token.split(".")[1];
+
+            if (!payloadBase64) {
+                return null;
+            }
+
+            const payloadJson = atob(
+                payloadBase64.replace(/-/g, "+").replace(/_/g, "/")
+            );
+
+            const payload = JSON.parse(payloadJson);
+
+            return payload.role ?? null;
+        } catch (error) {
+            console.error("JWT role 파싱 실패:", error);
+            return null;
+        }
+    };
+
+    const tokenRole = getRoleFromToken();
+    const isAdmin = user?.role === "ADMIN" || tokenRole === "ADMIN";
 
     const [status, setStatus] = useState<AdminStatus | null>(null);
     const [members, setMembers] = useState<AdminMember[]>([]);
@@ -157,7 +185,7 @@ function AdminPage({ user }: AdminPageProps) {
 
     return (
         <div className="admin-page">
-            <MyPageSideBar user={user} />
+            <MyPageSideBar user={user} fallbackRole={tokenRole} />
 
             <main className="admin-main">
                 <div className="admin-card">
@@ -199,21 +227,13 @@ function AdminPage({ user }: AdminPageProps) {
                                 placeholder="아이디를 입력하세요."
                             />
 
-                            <button
-                                type="button"
-                                className="search-btn"
-                                onClick={searchMember}
-                            >
+                            <button type="button" className="search-btn" onClick={searchMember}>
                                 검색
                             </button>
 
                             <button
                                 type="button"
-                                className={
-                                    roleFilter === "ALL"
-                                        ? "role-filter active"
-                                        : "role-filter"
-                                }
+                                className={roleFilter === "ALL" ? "role-filter active" : "role-filter"}
                                 onClick={() => {
                                     setRoleFilter("ALL");
                                     getMemberList(0, "ALL", keyword);
@@ -224,11 +244,7 @@ function AdminPage({ user }: AdminPageProps) {
 
                             <button
                                 type="button"
-                                className={
-                                    roleFilter === "ADMIN"
-                                        ? "role-filter active"
-                                        : "role-filter"
-                                }
+                                className={roleFilter === "ADMIN" ? "role-filter active" : "role-filter"}
                                 onClick={() => {
                                     setRoleFilter("ADMIN");
                                     getMemberList(0, "ADMIN", keyword);
@@ -239,11 +255,7 @@ function AdminPage({ user }: AdminPageProps) {
 
                             <button
                                 type="button"
-                                className={
-                                    roleFilter === "USER"
-                                        ? "role-filter active"
-                                        : "role-filter"
-                                }
+                                className={roleFilter === "USER" ? "role-filter active" : "role-filter"}
                                 onClick={() => {
                                     setRoleFilter("USER");
                                     getMemberList(0, "USER", keyword);
@@ -289,10 +301,7 @@ function AdminPage({ user }: AdminPageProps) {
                                                             const selectBox = event.currentTarget;
                                                             const selectedRole = selectBox.value;
 
-                                                            await changeMemberRole(
-                                                                member.memberId,
-                                                                selectedRole
-                                                            );
+                                                            await changeMemberRole(member.memberId, selectedRole);
 
                                                             selectBox.value = "";
                                                         }}
@@ -307,9 +316,7 @@ function AdminPage({ user }: AdminPageProps) {
                                                     <button
                                                         type="button"
                                                         className="delete-btn"
-                                                        onClick={() =>
-                                                            deleteMember(member.memberId)
-                                                        }
+                                                        onClick={() => deleteMember(member.memberId)}
                                                     >
                                                         삭제
                                                     </button>
@@ -335,11 +342,7 @@ function AdminPage({ user }: AdminPageProps) {
                                 <button
                                     type="button"
                                     key={index}
-                                    className={
-                                        currentPage === index
-                                            ? "page-btn active"
-                                            : "page-btn"
-                                    }
+                                    className={currentPage === index ? "page-btn active" : "page-btn"}
                                     onClick={() => onPageChange(index)}
                                 >
                                     {index + 1}

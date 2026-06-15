@@ -219,8 +219,6 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 if (handleLoginSuccess) {
                     handleLoginSuccess(userData);
                 }
-
-                alert("로그인 성공! 환영합니다.");
                 navigate("/");
                 return;
             }
