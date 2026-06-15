@@ -5,6 +5,7 @@ import { Settings } from "lucide-react";
 import { Alert } from "react-bootstrap";
 import "./PasswordlessSetting.css";
 import type { User } from "../../types/User";
+import { API_BASE_URL } from "../../config/config";
 
 type SetupStep = "input" | "loading" | "code";
 
@@ -95,7 +96,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 console.log("Passwordless setting 분기 진입");
 
                 const response = await axios.post(
-                    "/api/passwordless/join-ap",
+                    `${API_BASE_URL}/api/passwordless/join-ap`,
                     {
                         userId: trimmedLoginId,
                     },
@@ -127,7 +128,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 console.log("login-process Axios 호출 직전");
 
                 const response = await axios.post(
-                    "/api/passwordless/login-process",
+                    `${API_BASE_URL}/api/passwordless/login-process`,
                     {
                         userId: trimmedLoginId,
                         random,
@@ -194,7 +195,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
             console.log("sessionId =", sessionId);
 
             const response = await axios.post(
-                "/api/passwordless/result",
+                `${API_BASE_URL}/api/passwordless/result`,
                 {
                     userId: trimmedLoginId,
                     sessionId,
