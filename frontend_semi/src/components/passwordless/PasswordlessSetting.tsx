@@ -184,7 +184,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         console.log("sessionId =", sessionId);
 
         const response = await axios.post(
-            "/api/passwordless/result",
+            `${API_BASE_URL}/api/passwordless/result`,
             {
                 userId: trimmedLoginId,
                 sessionId,
