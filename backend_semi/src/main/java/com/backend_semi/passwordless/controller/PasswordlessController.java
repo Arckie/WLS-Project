@@ -102,7 +102,7 @@ public class PasswordlessController {
         tokenRequest.setUserId(request.getUserId());
         tokenRequest.setServerKey(passwordlessProperties.getServerKey()); // 추가
         PasswordlessApiResponse<GetTokenForOneTimeResponseDto> tokenResponse =
-                passwordlessService.GetTokenForOneTime(tokenRequest);
+                passwordlessService.GetTokenForOneTimeDecrypto(tokenRequest);
 
         // 4. getSp 요청
         GetSpRequestDto spRequest = new GetSpRequestDto();

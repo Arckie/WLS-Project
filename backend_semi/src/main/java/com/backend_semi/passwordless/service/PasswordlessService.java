@@ -1,7 +1,9 @@
 package com.backend_semi.passwordless.service;
 
 import com.backend_semi.passwordless.client.PasswordlessWebClient;
+import com.backend_semi.passwordless.config.PasswordlessProperties;
 import com.backend_semi.passwordless.dto.*;
+import com.backend_semi.passwordless.util.PasswordlessTokenDecryptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PasswordlessService {
     private final PasswordlessWebClient passwordlessWebClient;
+    private final PasswordlessTokenDecryptor tokenDecryptor;
+    private final PasswordlessProperties properties;
 
     public PasswordlessApiResponse<IsApResponseDataDto> isAp(IsApRequestDto request){
         if(request == null || request.getUserId() == null || request.getUserId().isBlank()){
@@ -119,5 +123,24 @@ public class PasswordlessService {
             throw new IllegalArgumentException("userId는 필수 값입니다.");
         }
         return passwordlessWebClient.requestWithdrawal(request);
+    }
+
+    // 받아온 Token을 복호화하는 메서드
+    public PasswordlessApiResponse<GetTokenForOneTimeResponseDto> GetTokenForOneTimeDecrypto(
+            GetTokenForOneTimeRequestDto request
+    ) {
+        PasswordlessApiResponse<GetTokenForOneTimeResponseDto> response =
+                passwordlessWebClient.requestGetTokenForOneTime(request);
+
+        String encryptedToken = response.getData().getToken();
+        String serverKey = properties.getServerKey();
+
+        String decryptedToken = tokenDecryptor.decryptToken(encryptedToken, serverKey);
+
+        System.out.println("복호화된 token = " + decryptedToken);
+
+        response.getData().setToken(decryptedToken);
+
+        return response;
     }
 }
