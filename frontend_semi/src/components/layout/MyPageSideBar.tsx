@@ -8,10 +8,40 @@ function MyPageSideBar() {
   const isMember = location.pathname === "/members/mypage";
   const isLearning = location.pathname === "/members/mypage/learning";
   const isFavorite = location.pathname === "/members/mypage/favorite";
+  
+  const isAdminPage = location.pathname ==="/admin";
+  
+  
+ //관리자 버튼을 관리자 로그인 상태에서만 보여주기 위함 
+ const token = localStorage.getItem("accessToken");
+ const role = localStorage.getItem("role");
+ const isAdmin = !!token && role === "ADMIN";
+
+   
+
   //===========================================================================
   // 아래의 변수는 각 페이지의 위치일때 페이지 아이콘의 이미지를 바꾸기 위한 변수입니다. 삼항연산자를 활용하여
   // 멤버일때 이것, 학습일때 이것, 즐겨찾기일떄 이것, 식으로 작동하고 디폴트는 멤버일때입니다.
-  const bottomImage = isMember
+  // const bottomImage = isMember
+  //   ? "/mypage-profile.svg"
+  //   : isLearning
+  //     ? "/mypage-learning.svg"
+  //     : isFavorite
+  //       ? "/mypage-favorite.svg"
+  //       : "/mypage-profile.svg";
+
+  // const bottomTitle = isMember
+  //   ? "PROFILE"
+  //   : isLearning
+  //     ? "LEARNING-INFO"
+  //     : isFavorite
+  //       ? "FAVORITE"
+  //       : "PROFILE";
+
+  // 관리자로 로그인시 관리자 아이콘만 보일 수 있도록 통일
+  const bottomImage = isAdmin
+  ? "/mypage-admin.svg"
+  : isMember
     ? "/mypage-profile.svg"
     : isLearning
       ? "/mypage-learning.svg"
@@ -19,7 +49,9 @@ function MyPageSideBar() {
         ? "/mypage-favorite.svg"
         : "/mypage-profile.svg";
 
-  const bottomTitle = isMember
+const bottomTitle = isAdmin
+  ? "ADMIN"
+  : isMember
     ? "PROFILE"
     : isLearning
       ? "LEARNING-INFO"
@@ -68,11 +100,32 @@ function MyPageSideBar() {
           <span>03</span>
           즐겨찾기
         </button>
-      </div>
 
+        {isAdmin &&(
+          <button
+            type="button"
+            className={isAdminPage ? "mypage-menu active" : "mypage-menu"}
+            onClick={()=>navigate("/admin")}
+          >
+            <span>00</span>
+             관리자
+            </button>  
+        )}
+      </div>
+  
+  //관리자 로그인시 문구 변경 
       <div className="mypage-sidebar-guide">
+        {isAdmin ?(
+          <>
+           <p>ⓘ 관리자 권한으로</p>
+        <p>회원과 시스템 정보를 관리합니다.</p>
+          </>
+        ) :(
+          <>
         <p>ⓘ 내 학습과 계정 정보를</p>
         <p>한 곳에서 관리할 수 있습니다.</p>
+       </>
+        )} 
       </div>
 
       <div className="mypage-sidebar-bottom">
