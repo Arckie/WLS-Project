@@ -44,8 +44,6 @@ public class SecurityConfig {
                 "/api/members/signup",   // 회원가입
                 "/api/members/login",    // 로그인
                 "/api/members/checkId",  // 아이디 중복확인 (회원가입 도중 호출)
-                "/api/passwordless/**",        // Passwordless 인증
-                "/api/members/passwordless-login", // Passwordless 로그인
         };
 
         http
@@ -65,6 +63,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 1) 누구나 접근 가능한 주소들 (배열로 한번에)
                         .requestMatchers(permitUrls).permitAll()
+                        .requestMatchers("/api/passwordless/**").permitAll()
 
                         // 2) 로그인하면 누구나 볼 수 있는 공개 조회들
                         // 비로그인 메인 화면(Home.tsx)에서도 호출되므로 permitAll로 열어둠

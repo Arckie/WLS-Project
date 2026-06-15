@@ -157,82 +157,87 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         handleConfirm();
     };
 
-    const handleResult = async () => {
-        if (isExpired) {
-            alert("인증 시간이 만료됐습니다. 다시 시도해주세요.");
+ const handleResult = async () => {
+    if (isExpired) {
+        alert("인증 시간이 만료됐습니다. 다시 시도해주세요.");
+        setStep("input");
+        return;
+    }
+
+    try {
+        if (mode === "setting") {
+            alert("Passwordless 등록이 완료됐습니다!");
+            navigate("/");
+            return;
+        }
+
+        if (!sessionId) {
+            alert("인증 세션 정보가 없습니다. 다시 시도해주세요.");
             setStep("input");
             return;
         }
 
-        try {
-            if (mode === "setting") {
-                alert("Passwordless 등록이 완료됐습니다!");
-                navigate("/members/login");
-                return;
+        const trimmedLoginId = loginId.trim();
+
+        console.log("result Axios 호출");
+        console.log("userId =", trimmedLoginId);
+        console.log("sessionId =", sessionId);
+
+        const response = await axios.post(
+            "/api/passwordless/result",
+            {
+                userId: trimmedLoginId,
+                sessionId,
+            },
+            axiosConfig
+        );
+
+        console.log("result 응답:", response.data);
+
+        /*
+         * auth == Y인 경우:
+         * 백엔드가 MemberLoginResponseDto를 바로 반환함.
+         *
+         * auth == W/N인 경우:
+         * 백엔드가 PasswordlessApiResponse<ResultResponseDto>를 반환함.
+         */
+
+        const accessToken = response.data?.accessToken;
+
+        if (accessToken) {
+            const { accessToken, ...userData } = response.data;
+
+            localStorage.setItem("accessToken", accessToken);
+
+            if (handleLoginSuccess) {
+                handleLoginSuccess(userData);
             }
 
-            if (!sessionId) {
-                alert("인증 세션 정보가 없습니다. 다시 시도해주세요.");
-                setStep("input");
-                return;
-            }
-
-            const trimmedLoginId = loginId.trim();
-
-            console.log("result Axios 호출");
-            console.log("userId =", trimmedLoginId);
-            console.log("sessionId =", sessionId);
-
-            const response = await axios.post(
-                `${API_BASE_URL}/api/passwordless/result`,
-                {
-                    userId: trimmedLoginId,
-                    sessionId,
-                },
-                axiosConfig
-            );
-
-            console.log("result 응답:", response.data);
-
-            const auth = response.data?.data?.auth;
-
-            if (auth === "Y") {
-                console.log("Passwordless 승인 완료. 내부 로그인 요청 시작");
-
-                const loginResponse = await axios.post(
-                    "/api/members/passwordless-login",
-                    {
-                        userId: trimmedLoginId,
-                    },
-                    axiosConfig
-                );
-
-                console.log("passwordless-login 응답:", loginResponse.data);
-
-                const { accessToken, ...userData } = loginResponse.data;
-
-                localStorage.setItem("accessToken", accessToken);
-
-                if (handleLoginSuccess) {
-                    handleLoginSuccess(userData);
-                }
-
-                alert("로그인 성공! 환영합니다.");
-                navigate("/");
-            } else if (auth === "N") {
-                alert("승인이 거부됐습니다. 다시 시도해주세요.");
-                setStep("input");
-            } else if (auth === "W") {
-                alert("아직 승인 대기 중입니다. 앱에서 승인해주세요.");
-            } else {
-                alert("인증 상태를 확인할 수 없습니다. 다시 시도해주세요.");
-            }
-        } catch (error: any) {
-            console.error("Passwordless 결과 확인 실패:", error);
-            alert(getErrorMessage(error));
-            setStep("input");
+            alert("로그인 성공! 환영합니다.");
+            navigate("/");
+            return;
         }
-    };
+
+        const auth = response.data?.data?.auth;
+
+        if (auth === "N") {
+            alert("승인이 거부됐습니다. 다시 시도해주세요.");
+            setStep("input");
+            return;
+        }
+
+        if (auth === "W") {
+            alert("아직 승인 대기 중입니다. 앱에서 승인해주세요.");
+            return;
+        }
+
+        alert("인증 상태를 확인할 수 없습니다. 다시 시도해주세요.");
+    } catch (error: any) {
+        console.error("Passwordless 결과 확인 실패:", error);
+        alert(getErrorMessage(error));
+        setStep("input");
+    }
+};
 
     useEffect(() => {
         if (step !== "code" || timeLeft <= 0) {
