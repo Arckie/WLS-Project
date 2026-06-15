@@ -119,7 +119,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
                 console.log("login-process Axios 호출 직전");
 
-                const response = await customAxios.post("/passwordless/login-process", {
+                const response = await customAxios.post("/api/passwordless/login-process", {
                     userId: trimmedLoginId,
                     random,
                     sessionId: newSessionId,
