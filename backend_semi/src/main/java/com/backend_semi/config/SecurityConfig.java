@@ -44,6 +44,8 @@ public class SecurityConfig {
                 "/api/members/signup",   // 회원가입
                 "/api/members/login",    // 로그인
                 "/api/members/checkId",  // 아이디 중복확인 (회원가입 도중 호출)
+                "/api/passwordless/**",        // Passwordless 인증
+                "/api/members/passwordless-login", // Passwordless 로그인
         };
 
         http
