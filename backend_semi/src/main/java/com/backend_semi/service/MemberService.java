@@ -274,28 +274,4 @@ public class MemberService {
 
         memberRepository.delete(member);
     }
-
-    // Passwordless 로그인 - userId로 회원 찾아서 JWT 발급
-    @Transactional
-    public MemberLoginResponseDto passwordlessLogin(String loginId) {
-        Member member = memberRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
-
-        String accessToken = jwtUtil.createAccessToken(
-                member.getMemberId(),
-                member.getLoginId(),
-                member.getName(),
-                member.getRole().name()
-        );
-
-        return new MemberLoginResponseDto(
-                accessToken,
-                member.getMemberId(),
-                member.getRole().name(),
-                member.getLoginId(),
-                member.getEmail(),
-                member.getName(),
-                member.getPhone()
-        );
-    }
 }

@@ -16,7 +16,7 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:9000',
         changeOrigin: true,
-//         rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
       // 이미지 경로도 백엔드로 넘김 (백엔드 WebConfig의 /images/** 처리용)
       '/images': {

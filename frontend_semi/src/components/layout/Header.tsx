@@ -150,10 +150,16 @@ function Header({ user, handleLogout }: HeaderProps) {
               <button
                 type="button"
                 className="header-button header-user-button"
-                onClick={() => navigate("/members/mypage/learning")}
+                onClick={() => {
+                  if(user.role === "ADMIN"){
+                    navigate("/admin");   //("/members/mypage/adminpage")에서 수정 YJ
+                  } else {
+                    navigate("/members/mypage/learning");
+                  }
+                }}
               >
                 <span className="header-user-avatar">♙</span>
-                {user.name}
+                {user.role === "ADMIN" ? "관리자" : user.name}
               </button>
 
               <button
