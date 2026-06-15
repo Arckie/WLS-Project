@@ -30,7 +30,7 @@ function LoginPage({ handleLoginSuccess }: AppRoutesProps) {
         console.log('로그인 시도중입니다.');
 
         try {
-            const url = "/members/login";
+            const url = "/api/members/login";
             const params = { loginId, password }; // 파라미터
             const config = {
                 headers: { // 헤더에 MIME type 적어서 요청
@@ -112,7 +112,7 @@ function LoginPage({ handleLoginSuccess }: AppRoutesProps) {
                     <button className="login-button" onClick={handleLogin}>로그인</button>
                     <p className="login-signup-text">
                         아직 회원이 아니신가요?{" "}
-                        <span className="login-signup-link" onClick={() => navigate("/members/signup")}>
+                        <span className="login-signup-link" onClick={() => navigate("/signup/terms")}>
                             회원가입
                         </span>
                     </p>
