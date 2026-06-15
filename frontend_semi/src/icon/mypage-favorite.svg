@@ -1,0 +1,14 @@
+<svg width="180" height="150" viewBox="0 0 180 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="36" y="34" width="108" height="82" rx="16" fill="white" fill-opacity="0.2"/>
+  <rect x="50" y="48" width="80" height="10" rx="5" fill="white" fill-opacity="0.75"/>
+  <rect x="50" y="68" width="58" height="8" rx="4" fill="white" fill-opacity="0.5"/>
+  <rect x="50" y="84" width="70" height="8" rx="4" fill="white" fill-opacity="0.35"/>
+
+  <path d="M130 72L137 87L154 89L142 101L145 118L130 110L115 118L118 101L106 89L123 87L130 72Z" fill="white" fill-opacity="0.9"/>
+  <path d="M130 80L135 91L147 92L138 100L140 112L130 106L120 112L122 100L113 92L125 91L130 80Z" fill="#1E73FF"/>
+
+  <circle cx="48" cy="36" r="12" fill="white" fill-opacity="0.25"/>
+  <circle cx="148" cy="42" r="8" fill="white" fill-opacity="0.18"/>
+
+  <text x="90" y="144" text-anchor="middle" fill="white" fill-opacity="0.72" font-family="Arial, sans-serif" font-size="16" font-weight="800">FAVORITE</text>
+</svg>

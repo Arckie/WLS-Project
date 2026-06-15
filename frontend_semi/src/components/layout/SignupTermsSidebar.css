@@ -1,0 +1,179 @@
+.signup-sidebar {
+  width: 320px;
+  min-height: calc(100vh - 90px);
+  padding: 36px 34px;
+
+  flex-shrink: 0;
+  box-sizing: border-box;
+
+  color: white;
+
+  background: linear-gradient(180deg, #2688ff 0%, #0056d8 100%);
+  border-top-right-radius: 28px;
+  border-bottom-right-radius: 26px;
+  
+}
+
+.signup-sidebar-title {
+  margin: 0 0 28px;
+
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.signup-sidebar-step {
+  height: 54px;
+  padding: 0 12px;
+  margin-bottom: 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  color: #dbeafe;
+  font-size: 17px;
+  font-weight: 800;
+
+  border-radius: 12px;
+}
+
+.signup-sidebar-step.active {
+  color: white;
+  background: rgba(0, 61, 160, 0.58);
+}
+
+.signup-sidebar-step.done {
+  color: white;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.signup-sidebar-step-number {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #1e73ff;
+  font-weight: 900;
+
+  background: white;
+  border-radius: 8px;
+}
+
+.signup-sidebar-step.pending .signup-sidebar-step-number {
+  color: #dbeafe;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.signup-sidebar-step.done .signup-sidebar-step-number {
+  color: #1e73ff;
+  background: white;
+}
+
+.signup-sidebar-step-check {
+  width: 20px;
+
+  font-size: 18px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.signup-sidebar-guide {
+  margin-top: 58px;
+  padding-top: 22px;
+
+  color: #dbeafe;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.45;
+
+  border-top: 1px dashed rgba(255, 255, 255, 0.35);
+}
+
+.signup-sidebar-guide p {
+  margin: 0 0 4px;
+}
+
+.signup-sidebar-illust {
+  margin-top: 110px;
+
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.signup-sidebar-illust-icon {
+  margin-bottom: 20px;
+
+  font-size: 76px;
+  opacity: 0.6;
+}
+
+.signup-sidebar-illust p {
+  margin: 4px 0;
+}
+
+/* 비밀번호 / 이름 입력창 길이 통일 */
+.signup-short-input {
+  width: 420px;
+}
+
+/* 이름 input도 비밀번호 정도 길이로 */
+.name-input {
+  width: 420px;
+}
+
+/* 비밀번호 / 비밀번호 확인 */
+.signup-form-row .signup-input[type="password"] {
+  width: 420px;
+}
+
+.signup-field-column {
+  width: 420px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-field-column .signup-input {
+  width: 420px;
+}
+
+/* 관심 학습 분야: 가로 알약형으로 정렬 */
+.signup-profile-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.signup-profile-group label {
+  width: auto;
+  height: 44px;
+  padding: 0 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  color: #0f2d5c;
+  font-size: 15px;
+  font-weight: 900;
+
+  background: #f8fbff;
+  border: 1px solid #c9d7ee;
+  border-radius: 999px;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.signup-profile-group input {
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+}

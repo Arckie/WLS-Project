@@ -1,0 +1,222 @@
+.lecture-edit-page {
+  min-height: 100vh;
+  margin-top :90px;
+  padding: 20px 32px 20px;
+  box-sizing: border-box;
+
+  background: #f4f8ff;
+}
+
+.lecture-edit-panel {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 30px 34px 34px;
+  box-sizing: border-box;
+
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+  border: 1px solid #cfe0f8;
+  border-radius: 18px;
+
+  box-shadow: 0 10px 28px rgba(0, 70, 150, 0.08);
+}
+
+.lecture-edit-title-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  margin-bottom: 28px;
+}
+
+.lecture-edit-title-icon {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 32px;
+
+  background: white;
+  border: 1px solid #d7e4f7;
+  border-radius: 50%;
+  box-shadow: 0 8px 18px rgba(0, 78, 180, 0.15);
+}
+
+.lecture-edit-title-row h1 {
+  margin: 0 0 6px;
+
+  color: #0f2d5c;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+.lecture-edit-title-row p {
+  margin: 0;
+
+  color: #5b6678;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.lecture-edit-alert {
+  margin-bottom: 18px;
+}
+
+.lecture-edit-form {
+  padding: 28px 30px;
+
+  background: white;
+  border: 1px solid #d7e4f7;
+  border-radius: 14px;
+
+  box-shadow: 0 6px 14px rgba(0, 58, 140, 0.06);
+}
+
+.lecture-form-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: center;
+  column-gap: 22px;
+
+  margin-bottom: 18px;
+}
+
+.lecture-form-row:last-of-type {
+  margin-bottom: 0;
+}
+
+.lecture-form-row label {
+  color: #0f2d5c;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.lecture-form-control-area {
+  min-width: 0;
+}
+
+.lecture-form-control-area input,
+.lecture-form-control-area select,
+.lecture-form-control-area textarea,
+.lecture-form-control-area .form-control,
+.lecture-form-control-area .form-select {
+  width: 100%;
+
+  color: #1f2937;
+  font-size: 15px;
+  font-weight: 700;
+
+  background-color: white;
+  border: 1px solid #c9d7ee;
+  border-radius: 8px;
+  box-sizing: border-box;
+
+  outline: none;
+  box-shadow: none;
+}
+
+.lecture-form-control-area input,
+.lecture-form-control-area select,
+.lecture-form-control-area .form-control:not(textarea),
+.lecture-form-control-area .form-select {
+  height: 46px;
+}
+
+.lecture-form-control-area textarea {
+  padding-top: 14px;
+  padding-bottom: 14px;
+
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.lecture-form-control-area input:focus,
+.lecture-form-control-area select:focus,
+.lecture-form-control-area textarea:focus,
+.lecture-form-control-area .form-control:focus,
+.lecture-form-control-area .form-select:focus {
+  border-color: #1479e8;
+  box-shadow: 0 0 0 3px rgba(20, 121, 232, 0.13);
+}
+
+.textarea-row {
+  align-items: start;
+}
+
+.textarea-row label {
+  padding-top: 13px;
+}
+
+.description-textarea {
+  min-height: 120px;
+}
+
+.code-textarea {
+  min-height: 220px;
+
+  font-family: Consolas, Monaco, "Courier New", monospace;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.65;
+
+  background-color: #f8fbff !important;
+}
+
+.invalid-feedback {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.lecture-edit-button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+
+  margin-top: 24px;
+}
+
+.lecture-cancel-button,
+.lecture-submit-button {
+  width: 150px;
+  height: 50px;
+
+  font-size: 16px;
+  font-weight: 900;
+
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.lecture-cancel-button {
+  color: #333;
+
+  background: white;
+  border: 1px solid #d4dce8;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.lecture-cancel-button:hover {
+  background: #f4f8ff;
+}
+
+.lecture-submit-button {
+  color: white;
+
+  background: linear-gradient(180deg, #2d7dff 0%, #005bdc 100%);
+  border: none;
+
+  box-shadow: 0 7px 14px rgba(0, 89, 220, 0.24);
+}
+
+.lecture-submit-button:hover {
+  background: linear-gradient(180deg, #1768e8 0%, #004fc4 100%);
+}
+
+.lecture-submit-button:active,
+.lecture-cancel-button:active {
+  transform: translateY(1px) scale(0.98);
+}

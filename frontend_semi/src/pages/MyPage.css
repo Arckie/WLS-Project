@@ -1,0 +1,606 @@
+.mypage-page {
+  width: 100%;
+  min-height: calc(100vh - 72px);
+  margin-top: 85px;
+  box-sizing: border-box;
+
+  background: #f4f8ff;
+  overflow: visible;
+}
+
+.mypage-main {
+  min-height: calc(100vh - 72px);
+  margin-left: 320px;
+
+  padding: 24px 32px;
+  box-sizing: border-box;
+
+  background: #f4f8ff;
+  overflow: visible;
+}
+
+.member-info-card {
+  width: 100%;
+  min-height: auto;
+
+  padding: 28px;
+  box-sizing: border-box;
+
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid #d7e4f7;
+  border-radius: 20px;
+  box-shadow: 0 10px 28px rgba(0, 70, 150, 0.08);
+
+  overflow: visible;
+}
+
+.member-info-layout {
+  width: 100%;
+  min-height: 100%;
+
+  display: block;
+  overflow: visible;
+}
+
+/* 왼쪽 꾸미기 영역 */
+.member-profile-visual {
+  min-width: 0;
+  height: 100%;
+
+  padding: 42px 36px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  color: white;
+
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.28), transparent 32%),
+    linear-gradient(180deg, #2f8dff 0%, #0065e8 100%);
+
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(0, 80, 190, 0.16);
+
+  overflow: hidden;
+}
+
+.member-profile-logo {
+  width: 96px;
+  height: 96px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 48px;
+
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 28px;
+}
+
+.member-profile-text {
+  margin-top: 38px;
+}
+
+.member-profile-badge {
+  width: fit-content;
+  margin: 0 0 14px;
+  padding: 8px 14px;
+
+  color: white;
+  font-size: 13px;
+  font-weight: 900;
+
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+}
+
+.member-profile-text h2 {
+  margin: 0 0 18px;
+
+  color: white;
+  font-size: clamp(32px, 2.4vw, 48px);
+  font-weight: 900;
+  line-height: 1.18;
+  letter-spacing: -1px;
+}
+
+.member-profile-text p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 16px;
+  font-weight: 750;
+  line-height: 1.7;
+}
+
+.member-profile-point {
+  padding-top: 28px;
+
+  border-top: 1px dashed rgba(255, 255, 255, 0.38);
+}
+
+.member-profile-point span {
+  display: block;
+  margin-bottom: 8px;
+
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+}
+
+.member-profile-point strong {
+  display: block;
+
+  color: white;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+/* 오른쪽 폼 영역 */
+.member-info-content {
+  width: 100%;
+
+  padding: 10px 6px 4px;
+  box-sizing: border-box;
+
+  overflow: visible;
+}
+
+.member-info-header {
+  flex-shrink: 0;
+  margin-bottom: 26px;
+}
+
+.member-info-badge {
+  width: fit-content;
+  margin: 0 0 10px;
+  padding: 7px 13px;
+
+  color: #0753bf;
+  font-size: 13px;
+  font-weight: 900;
+
+  background: white;
+  border: 1px solid #cfe0f8;
+  border-radius: 999px;
+}
+
+.member-info-header h1 {
+  margin: 0 0 8px;
+
+  color: #0f2d5c;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+.member-info-header p {
+  margin: 0;
+
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.member-info-form {
+  flex: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  overflow: hidden;
+}
+
+.member-form-row {
+  display: grid;
+  grid-template-columns: 135px minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+}
+
+.member-form-row label {
+  color: #0f2d5c;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.member-info-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 15px;
+  box-sizing: border-box;
+
+  color: #1f2937;
+  font-size: 15px;
+  font-weight: 700;
+
+  background: #f8fbff;
+  border: 1px solid #cfe0f8;
+  border-radius: 10px;
+
+  outline: none;
+}
+
+.member-info-input:focus {
+  border-color: #1479e8;
+  box-shadow: 0 0 0 3px rgba(20, 121, 232, 0.12);
+}
+
+.member-info-input:read-only {
+  color: #475569;
+  background: #f1f6ff;
+  cursor: default;
+}
+
+.member-password-area {
+  display: grid;
+  grid-template-columns: 135px minmax(0, 1fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.member-password-area > label {
+  padding-top: 13px;
+
+  color: #0f2d5c;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.member-password-fields.password-change-fields {
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 70px;
+  gap: 12px;
+  align-items: start;
+}
+
+.member-password-current {
+  grid-column: 1 / -1;
+}
+
+.member-password-input-group {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.member-password-check-label {
+  color: #0f2d5c;
+  font-size: 15px;
+  font-weight: 900;
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.member-password-fields {
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px minmax(0, 1fr) 70px;
+  align-items: center;
+  gap: 12px;
+}
+
+.member-password-button {
+  width: 70px;
+  height: 46px;
+
+  color: white;
+  font-size: 14px;
+  font-weight: 900;
+
+  background: linear-gradient(180deg, #2d7dff 0%, #005bdc 100%);
+  border: none;
+  border-radius: 10px;
+
+  cursor: pointer;
+}
+
+.member-password-button:hover {
+  background: linear-gradient(180deg, #1768e8 0%, #004fc4 100%);
+}
+
+.member-learning-box {
+  min-height: 46px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  background: #f8fbff;
+  border: 1px solid #cfe0f8;
+  border-radius: 10px;
+}
+
+.member-learning-empty {
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.member-learning-chip {
+  padding: 8px 13px;
+
+  color: #0753bf;
+  font-size: 14px;
+  font-weight: 900;
+
+  background: white;
+  border: 1px solid #cfe0f8;
+  border-radius: 999px;
+}
+
+.member-info-actions {
+  flex-shrink: 0;
+
+  margin-top: auto;
+  padding-top: 22px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  border-top: 1px dashed #cfe0f8;
+}
+
+.member-info-button {
+  min-width: 130px;
+  height: 46px;
+  padding: 0 22px;
+
+  font-size: 15px;
+  font-weight: 900;
+
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.member-info-button.secondary {
+  color: #334155;
+
+  background: white;
+  border: 1px solid #cbd5e1;
+}
+
+.member-info-button.secondary:hover {
+  background: #f8fafc;
+}
+
+.member-info-button.primary {
+  color: white;
+
+  background: linear-gradient(180deg, #2d7dff 0%, #005bdc 100%);
+  border: none;
+}
+
+.member-info-button.primary:hover {
+  background: linear-gradient(180deg, #1768e8 0%, #004fc4 100%);
+}
+
+.member-info-button.danger {
+  color: #b91c1c;
+
+  background: #fff5f5;
+  border: 1px solid #fecaca;
+}
+
+.member-info-button.danger:hover {
+  background: #fee2e2;
+}
+
+.member-learning-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 8px 13px;
+
+  color: #0753bf;
+  font-size: 14px;
+  font-weight: 900;
+
+  background: white;
+  border: 1px solid #cfe0f8;
+  border-radius: 999px;
+
+  cursor: pointer;
+}
+
+.member-learning-check input {
+  width: 14px;
+  height: 14px;
+  accent-color: #1479e8;
+}
+
+.member-password-message {
+  margin: 0;
+
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.member-password-message.success {
+  color: #059669;
+}
+
+.member-password-message.error {
+  color: #dc2626;
+}
+
+.member-password-input-group {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.member-info-input.password-error {
+  border-color: #ef4444;
+  background: #fff7f7;
+}
+
+.member-info-input.password-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+.member-password-guide {
+  min-height: 18px;
+  margin: 0;
+
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.member-password-guide.error {
+  color: #ef4444;
+}
+
+.member-password-guide.success {
+  color: #059669;
+}
+
+/* 높이가 낮은 화면에서 살짝 압축 */
+@media (max-height: 820px) {
+  .mypage-main {
+    padding: 18px 28px;
+  }
+
+  .member-info-card {
+    padding: 22px;
+  }
+
+.member-profile-visual {
+  display: none;
+}
+
+  .member-profile-logo {
+    width: 78px;
+    height: 78px;
+    font-size: 38px;
+    border-radius: 22px;
+  }
+
+  .member-profile-text h2 {
+    font-size: 34px;
+    margin-bottom: 12px;
+  }
+
+  .member-profile-text p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .member-info-header {
+    margin-bottom: 18px;
+  }
+
+  .member-info-header h1 {
+    font-size: 30px;
+  }
+
+  .member-info-form {
+    gap: 12px;
+  }
+
+  .member-info-input,
+  .member-password-button {
+    height: 42px;
+  }
+}
+
+/* 중간 화면 */
+@media (max-width: 1400px) {
+  .member-info-layout {
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .member-password-area {
+    grid-template-columns: 135px minmax(0, 1fr);
+  }
+
+  .member-password-check-label {
+    justify-self: start;
+  }
+
+  .member-password-button {
+    grid-column: 2 / 3;
+  }
+}
+
+/* 좁은 화면 */
+@media (max-width: 900px) {
+  .mypage-page {
+    height: auto;
+    min-height: calc(100vh - 72px);
+    overflow: visible;
+  }
+
+  .mypage-main {
+    height: auto;
+    min-height: calc(100vh - 72px);
+    margin-left: 0;
+    padding: 24px 18px;
+    overflow: visible;
+  }
+
+  .member-info-card {
+    height: auto;
+    min-height: auto;
+    padding: 22px;
+    overflow: visible;
+  }
+
+  .member-info-layout {
+    height: auto;
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+
+  .member-profile-visual {
+    min-height: 260px;
+  }
+
+  .member-form-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .member-password-area {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .member-password-button {
+    width: 100%;
+    grid-column: auto;
+  }
+
+  .member-info-actions {
+    flex-direction: column;
+  }
+
+  .member-info-button {
+    width: 100%;
+  }
+}

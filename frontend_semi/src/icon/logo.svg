@@ -1,0 +1,26 @@
+<svg width="220" height="72" viewBox="0 0 220 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="4" width="212" height="64" rx="14" fill="white"/>
+  <rect x="4" y="4" width="212" height="64" rx="14" stroke="#D8E7FF" stroke-width="2"/>
+
+  <rect x="16" y="16" width="188" height="40" rx="10" fill="url(#paint0_linear)"/>
+
+  <text
+    x="110"
+    y="43"
+    text-anchor="middle"
+    fill="white"
+    font-family="Arial, 'Noto Sans KR', sans-serif"
+    font-size="25"
+    font-weight="900"
+    letter-spacing="-1"
+  >
+    풀스택 강의실
+  </text>
+
+  <defs>
+    <linearGradient id="paint0_linear" x1="16" y1="16" x2="204" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2D8CFF"/>
+      <stop offset="1" stop-color="#005BD8"/>
+    </linearGradient>
+  </defs>
+</svg>

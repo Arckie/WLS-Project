@@ -1,0 +1,214 @@
+.mypage-sidebar {
+  position: fixed;
+  left: 0;
+  top: 90px;
+
+  width: 320px;
+  height: calc(100vh - 90px);
+
+  padding: 34px 24px 24px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  color: white;
+
+  background:
+    radial-gradient(circle at 82% 8%, rgba(255, 255, 255, 0.24), transparent 30%),
+    linear-gradient(180deg, #2f8dff 0%, #0065e8 100%);
+
+  border-top-right-radius: 26px;
+  border-bottom-right-radius: 26px;
+
+  box-shadow: 10px 0 26px rgba(0, 70, 150, 0.16);
+
+  overflow: hidden;
+  z-index: 900;
+}
+
+.mypage-sidebar-header {
+  flex: 0 0 auto;
+  margin-bottom: 24px;
+}
+
+.mypage-sidebar-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 10px;
+}
+
+.mypage-sidebar-title-icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+
+  color: white;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 15px;
+
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+.mypage-sidebar-title {
+  margin: 0;
+
+  color: white;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.18;
+  letter-spacing: -0.8px;
+}
+
+.mypage-sidebar-subtitle {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.mypage-sidebar-menu-list {
+  flex: 0 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mypage-menu {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 15px;
+  font-weight: 900;
+  text-align: left;
+
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease,
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.mypage-menu:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+.mypage-menu.active {
+  color: #0753bf;
+  background: white;
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 18px rgba(0, 40, 120, 0.18);
+}
+
+.mypage-menu span {
+  min-width: 32px;
+  height: 26px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #0753bf;
+  font-size: 12px;
+  font-weight: 900;
+
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 999px;
+
+  flex-shrink: 0;
+}
+
+.mypage-menu.active span {
+  color: white;
+  background: #1479e8;
+}
+
+.mypage-sidebar-guide {
+  flex: 0 0 auto;
+
+  margin-top: 22px;
+  padding: 16px;
+  box-sizing: border-box;
+
+  color: rgba(255, 255, 255, 0.88);
+
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+}
+
+.mypage-sidebar-guide p {
+  margin: 0;
+
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.6;
+}
+
+.mypage-sidebar-bottom {
+  min-height: 0;
+  flex: 1;
+
+  margin-top: 20px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+.mypage-sidebar-bottom img {
+  width: min(82%, 210px);
+  max-height: 250px;
+
+  object-fit: contain;
+
+  opacity: 0.96;
+  filter: drop-shadow(0 16px 22px rgba(0, 40, 120, 0.18));
+}
+
+@media (max-width: 900px) {
+  .mypage-sidebar {
+    position: relative;
+    top: auto;
+    left: auto;
+
+    width: 100%;
+    height: auto;
+
+    border-radius: 0 0 22px 22px;
+  }
+
+  .mypage-sidebar-bottom {
+    display: none;
+  }
+}
