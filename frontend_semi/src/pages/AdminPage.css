@@ -6,15 +6,17 @@
 }
 
 .admin-main {
-    margin-left: 320px;
-    padding: 24px 32px;
+    width:100%;
+    max-width: 2000px;
+    margin: 0 auto;
+    padding: 24px 40px;
 }
 
 .admin-card {
     background: #fff;
     border: 1px solid #dce8fb;
     border-radius: 20px;
-    padding: 28px;
+    padding: 32px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     overflow-x: auto;
 }
@@ -142,9 +144,9 @@
 
 table {
     width: 100%;
-    min-width: 900px;
+    min-width: 1100px;
     border-collapse: collapse;
-    table-layout: fixed;
+    table-layout: auto;
 }
 
 thead th {

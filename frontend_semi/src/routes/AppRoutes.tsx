@@ -17,6 +17,7 @@ import Introduce from "../pages/Introduce";
 import NoticeContents from "../pages/NoticeContents";
 import type { User } from "../types/User";
 import HowToUse from "../pages/HowToUse";
+import AdminPage from "../pages/AdminPage"; // YJ
 
 interface AppProps {
     user: User | null;
@@ -49,7 +50,11 @@ function AppRoutes({ user, handleLoginSuccess, handleLogout }: AppProps) {
                     <Route path="/lecture/list" element={<LecturePage user={user} />} />
                     <Route path="/lecture/insert" element={<LectureInsertForm user={user} />} />
                     <Route path="/lecture/update/:id" element={<LectureUpdateForm user={user} />} />
-                </Route>
+
+                     {/* 관리자 페이지 YJ*/}
+                    <Route path="/admin" element={<AdminPage user={user}/>} />
+                                       
+                 </Route>
 
                 {/* 정의되지 않은 주소로 접근하면 빈 화면 대신 홈으로 돌려보냅니다. */}
                 <Route path="*" element={<Navigate to="/" replace />} />
