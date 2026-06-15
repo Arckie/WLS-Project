@@ -17,7 +17,7 @@ import Introduce from "../pages/Introduce";
 import NoticeContents from "../pages/NoticeContents";
 import type { User } from "../types/User";
 import HowToUse from "../pages/HowToUse";
-import AdminPage from "../pages/AdminPage"; // YJ
+import PasswordlessSetting from "../components/passwordless/PasswordlessSetting.tsx";
 
 interface AppProps {
     user: User | null;
@@ -38,9 +38,11 @@ function AppRoutes({ user, handleLoginSuccess, handleLogout }: AppProps) {
 
                 {/* 로그인 / 회원가입 */}
                 <Route path="/members/login" element={<LoginPage handleLoginSuccess={handleLoginSuccess} />} />
+                <Route path="/members/login/passwordlessSetting" element={<PasswordlessSetting handleLoginSuccess={handleLoginSuccess} />} />
                 <Route path="/members/signup" element={<SignupPage />} />
                 <Route path="/signup/terms" element={<SignupTermsPage />} />
                 <Route path="/signup/complete" element={<SignupCompletePage />} />
+
 
                 {/* 로그인 필요 페이지 */}
                 <Route element={<ProtectedLayout user={user} />}>
@@ -50,11 +52,7 @@ function AppRoutes({ user, handleLoginSuccess, handleLogout }: AppProps) {
                     <Route path="/lecture/list" element={<LecturePage user={user} />} />
                     <Route path="/lecture/insert" element={<LectureInsertForm user={user} />} />
                     <Route path="/lecture/update/:id" element={<LectureUpdateForm user={user} />} />
-
-                     {/* 관리자 페이지 YJ*/}
-                    <Route path="/admin" element={<AdminPage user={user}/>} />
-                                       
-                 </Route>
+                </Route>
 
                 {/* 정의되지 않은 주소로 접근하면 빈 화면 대신 홈으로 돌려보냅니다. */}
                 <Route path="*" element={<Navigate to="/" replace />} />
