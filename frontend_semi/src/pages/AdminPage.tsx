@@ -37,20 +37,20 @@ function AdminPage({ user }: AdminPageProps) {
     const [currentPage, setCurrentPage] = useState(0);
     const [roleFilter, setRoleFilter] = useState("ALL");
 
-    useEffect(() => {
-        const token = localStorage.getItem("accessToken");
+useEffect(() => {
+    const token = localStorage.getItem("accessToken");
 
-        if (!token) {
-            alert("로그인이 필요합니다.");
-            navigate("/members/login", { replace: true });
-            return;
-        }
+    if (!token) {
+        alert("관리자만 접근이 가능합니다.");
+        navigate("/members/login", { replace: true });
+        return;
+    }
 
-        if (!isAdmin) {
-            alert("관리자만 접근할 수 있습니다.");
-            navigate("/", { replace: true });
-        }
-    }, [isAdmin, navigate]);
+    if (!isAdmin) {
+        alert("관리자만 접근이 가능합니다.");
+        navigate("/", { replace: true });
+    }
+}, [isAdmin, navigate]);
 
     useEffect(() => {
         if (isAdmin) {

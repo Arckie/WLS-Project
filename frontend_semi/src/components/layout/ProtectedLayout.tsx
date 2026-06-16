@@ -15,6 +15,13 @@ function ProtectedLayout({ user: _user }: ProtectedLayoutProps) {
   const location = useLocation();
 
   /*
+    관리자 페이지는 로그인 여부와 관계없이 관리자 전용 페이지라는 의미가 더 강합니다.
+    따라서 주소창으로 직접 접근했을 때도 "로그인이 필요합니다"가 아니라
+    "관리자만 접근이 가능합니다." 메시지를 우선 보여줍니다.
+  */
+  const isAdminPath = location.pathname === "/members/mypage/admin";
+
+  /*
     회원탈퇴 직후 5초 동안은 "로그인이 필요합니다" alert를 띄우지 않기 위한 플래그입니다.
     탈퇴 처리 중에는 토큰이 사라지므로, 불필요한 경고창이 뜨는 것을 막아줍니다.
   */
@@ -26,12 +33,20 @@ function ProtectedLayout({ user: _user }: ProtectedLayoutProps) {
     보호 라우트 접근 여부는 user state가 아니라 accessToken 기준으로 판단합니다.
     새로고침이나 /admin 직접 접근 시 user는 잠깐 null일 수 있기 때문입니다.
   */
+  const getUnauthorizedMessage = () => {
+    if (isAdminPath) {
+      return "관리자만 접근이 가능합니다.";
+    }
+
+    return "로그인이 필요합니다.";
+  };
+
   const guard = () => {
     const token = localStorage.getItem("accessToken");
 
     if (token === null) {
       if (!isMemberSignOffRedirecting) {
-        alert("로그인이 필요합니다.");
+        alert(getUnauthorizedMessage());
       }
 
       navigate("/members/login", {
