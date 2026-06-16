@@ -418,7 +418,8 @@
         border-radius: 0 0 22px 22px;
     }
 
-    .sidebar-dom2 {
-        max-height: 260px;
-    }
+.sidebar-dom2 {
+  overflow-y: auto;
+  min-height: 0;
+}
 }

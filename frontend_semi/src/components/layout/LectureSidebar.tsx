@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import customAxios from "../../api/axiosInstance";
 import type { Favorite } from "../../types/Favorite";
@@ -36,6 +36,12 @@ function LectureSidebar({
     const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
     const [favorites, setFavorites] = useState<Favorite[]>([]);
 
+    /*
+      즐겨찾기나 최근 학습에서 특정 강의로 이동했을 때,
+      사이드바 안의 해당 강의 DOM으로 스크롤하기 위한 ref 목록입니다.
+    */
+    const lectureItemRefs = useRef<Record<number, HTMLDivElement | null>>({});
+
     const groupedLectures = groupLecturesByCategory(lectures);
     const sortedCategoryNames = Object.keys(groupedLectures);
 
@@ -64,6 +70,33 @@ function LectureSidebar({
             [getLectureCategoryName(selectedLecture)]: true,
         });
     }, [currentLecture_id, lectures]);
+
+    /*
+      currentLecture_id에 해당하는 카테고리가 열린 뒤,
+      실제 강의 아이템 DOM이 렌더링되면 그 위치로 사이드바 스크롤을 이동합니다.
+      setTimeout을 둔 이유는 setOpenCategories 이후 DOM 반영이 끝난 다음 scrollIntoView를 실행하기 위해서입니다.
+    */
+    useEffect(() => {
+        if (!currentLecture_id) {
+            return;
+        }
+
+        const timerId = window.setTimeout(() => {
+            const currentLectureElement = lectureItemRefs.current[currentLecture_id];
+
+            if (!currentLectureElement) {
+                return;
+            }
+
+            currentLectureElement.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+                inline: "nearest",
+            });
+        }, 80);
+
+        return () => window.clearTimeout(timerId);
+    }, [currentLecture_id, openCategories]);
 
     const getFavorites = async () => {
         try {
@@ -208,6 +241,9 @@ function LectureSidebar({
                                                 return (
                                                     <div
                                                         key={lecture.id}
+                                                        ref={(element) => {
+                                                            lectureItemRefs.current[lecture.id] = element;
+                                                        }}
                                                         role="button"
                                                         tabIndex={0}
                                                         className={
