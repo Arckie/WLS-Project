@@ -164,16 +164,21 @@
 }
 
 .lecture-sidebar-coming-soon p {
+    width: 100%;
     margin: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     font-size: 12px;
     font-weight: 900;
     line-height: 1.35;
     letter-spacing: -0.04em;
 
+    text-align: center;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: clip;
 }
 
 .lecture-sidebar-empty {
