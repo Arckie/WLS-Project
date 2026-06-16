@@ -307,7 +307,9 @@ function LectureSidebar({
                     })
                 )}
             </div>
-
+            <p className="lecture-sidebar-subtitle-2">
+                    대주제를 열고 원하는 강의를 선택하세요.
+                </p>
             {user?.role === "ADMIN" && (
                 <div className="sidebar-dom sidebar-dom3">
                     <button

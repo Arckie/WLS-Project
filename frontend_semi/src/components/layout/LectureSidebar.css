@@ -405,6 +405,16 @@
   line-height: 1.5;
 }
 
+.lecture-sidebar-subtitle-2 {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  opacity: 80%;
+}
+
 @media (max-width: 900px) {
     .lecture-sidebar {
         position: relative;
