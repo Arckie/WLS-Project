@@ -307,11 +307,12 @@ function LectureSidebar({
                     })
                 )}
             </div>
-            <p className="lecture-sidebar-subtitle-2">
-                    대주제를 열고 원하는 강의를 선택하세요.
-                </p>
-            {user?.role === "ADMIN" && (
-                <div className="sidebar-dom sidebar-dom3">
+                      <div className="sidebar-dom sidebar-footer">
+                <div className="lecture-sidebar-coming-soon">
+                    <p>📚 새로운 강의가 계속 추가될 예정입니다.</p>
+                </div>
+
+                {user?.role === "ADMIN" && (
                     <button
                         type="button"
                         className="lecture-create-button"
@@ -319,8 +320,8 @@ function LectureSidebar({
                     >
                         + 새 글 작성
                     </button>
-                </div>
-            )}
+                )}
+            </div>
         </aside>
     );
 }
