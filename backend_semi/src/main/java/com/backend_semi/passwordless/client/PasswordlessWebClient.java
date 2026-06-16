@@ -68,8 +68,6 @@ public class PasswordlessWebClient {
                 .bodyToMono(String.class)
                 .block();
 
-
-
         if (responseBody == null || responseBody.isBlank()) {
             throw new IllegalStateException("Passwordless 서버 응답 Body가 비어 있습니다.");
         }
