@@ -5,15 +5,17 @@ import {
   FiCode,
   FiMonitor,
   FiCheckCircle,
+  FiEdit,
   FiChevronLeft,
   FiChevronRight
-} from "react-icons/fi";
-
+} from 'react-icons/fi';
 import "./HowToUse.css";
 
 // 사용할 이미지 파일들을 불러옵니다.
-import image01 from "../assets/홈페이지_김리운_01.png";
-import image02 from "../assets/홈페이지_김리운_02.png";
+import image01 from "../assets/01_1.jpg";
+import image02 from "../assets/02_1.jpg";
+import image03 from "../assets/3.jpg";
+import image04 from "../assets/4.jpg";
 
 /**
  * 학습 가이드 단계별 데이터(배열) 탭과 관련 내용으로 들어갑니다.
@@ -23,32 +25,34 @@ const models = [
   {
     id: 1,
     icon: <FiSettings />,
-    title: "설치 및 환경설정",
-    desc: "개발에 필요한 프로그램을 설치하고 기본 환경을 준비합니다.",
-    steps: ["Node.js 설치", "VS Code 설치", "필수 확장 프로그램 확인"],
-    img: [image01, image02] // 이미지가 여러 장일 경우 배열 사용
+    title: "학습 시작",
+    desc: "온라인 학습 공간에 접속하여 학습할 강의를 선택하고 기본 환경을 준비합니다.",
+    steps: ["학습 플랫폼 접속", "회원가입 및 로그인", "강의실 입장"],
+    img: [image01] // 1.jpg: 학습 시작 화면
   },
   {
     id: 2,
     icon: <FiCode />,
-    title: "코드 예시 확인",
-    desc: "백엔드와 프론트엔드 코드가 어떻게 작성되는지 확인합니다.",
-    steps: ["백엔드 API 구조 분석", "프론트엔드 컴포넌트 구조 확인"]
+    title: "코드 구조 확인",
+    desc: "강의에서 제공하는 Spring Boot 및 JPA 코드 예시를 확인하고 분석합니다.",
+    steps: ["강의 목록 확인", "코드 예시 파악", "복사 기능 활용"],
+    img: [image02] // 2.jpg: 강의 목록 및 코드 예시 화면
   },
   {
     id: 3,
-    icon: <FiMonitor />,
-    title: "구현 화면 확인",
-    desc: "작성한 코드가 실제 화면에서 어떻게 보이는지 확인합니다.",
-    steps: ["백엔드 API 구조 분석", "프론트엔드 컴포넌트 구조 확인"],
-    img: image02
+    icon: <FiEdit />,
+    title: "코드 수정 및 작성",
+    desc: "기존 코드를 수정하거나 새로운 기능을 위한 코드를 작성합니다.",
+    steps: ["코드 수정 버튼 클릭", "새 글 작성/수정 모드 진입", "비즈니스 로직 구현"],
+    img: [image03] // 3.jpg: 수정 및 새 글 작성 기능
   },
   {
     id: 4,
     icon: <FiCheckCircle />,
-    title: "프로젝트 적용",
-    desc: "배운 내용을 프로젝트에 적용하고 동작을 확인합니다.",
-    steps: ["백엔드 API 구조 분석", "프론트엔드 컴포넌트 구조 확인"]
+    title: "개발 도구 활용",
+    desc: "IntelliJ IDEA를 사용하여 효율적인 개발 환경을 구축하고 어노테이션을 적용합니다.",
+    steps: ["IntelliJ IDEA 설치 및 설정", "@Service, @RequiredArgsConstructor 적용", "코드 구현"],
+    img: [image04] // 4.jpg: IDE 추천 및 서비스 코드 어노테이션
   }
 ];
 

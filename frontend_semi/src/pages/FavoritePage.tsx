@@ -16,7 +16,7 @@ function FavoritePage() {
         try {
             const response = await customAxios.get("/api/favorites/me");
 
-            console.log("즐겨찾기 목록:", response.data);
+          //  console.log("즐겨찾기 목록:", response.data);
 
             setFavorites(response.data);
         } catch (error) {

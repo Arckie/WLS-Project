@@ -30,8 +30,8 @@ function LearningPage() {
                 customAxios.get(PROGRESS_SUMMARY_URL),
             ]);
 
-            console.log("최근 학습 정보:", recentResponse.data);
-            console.log("대주제별 학습 진도:", summaryResponse.data);
+          //  console.log("최근 학습 정보:", recentResponse.data);
+          //  console.log("대주제별 학습 진도:", summaryResponse.data);
 
             setRecentLectures(recentResponse.data || []);
             setProgressSummaries(summaryResponse.data || []);

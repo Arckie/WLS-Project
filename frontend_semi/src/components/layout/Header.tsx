@@ -1,8 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import logo from "../../icon/logo.svg";
+
 import type { User } from "../../types/User";
+
 import { isJwtExpired } from "../../utils/authUtils";
+
 import "./Header.css";
 
 type HeaderProps = {
@@ -13,6 +17,9 @@ type HeaderProps = {
 function Header({ user, handleLogout }: HeaderProps) {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [isIntroOpen, setIsIntroOpen] = useState(false);
+  const introDropdownRef = useRef<HTMLDivElement | null>(null);
 
   const isMemberSignOffRedirecting = () => {
     const signOffAt = Number(sessionStorage.getItem("memberSignOffAt"));
@@ -58,6 +65,24 @@ function Header({ user, handleLogout }: HeaderProps) {
     }
   };
 
+  const toggleIntroDropdown = () => {
+    setIsIntroOpen((prev) => !prev);
+  };
+
+  const closeIntroDropdown = () => {
+    setIsIntroOpen(false);
+  };
+
+  const moveToIntroduce = () => {
+    closeIntroDropdown();
+    navigate("/introduce");
+  };
+
+  const moveToHowToUse = () => {
+    closeIntroDropdown();
+    navigate("/introduce/howtouse");
+  };
+
   useEffect(() => {
     checkTokenExpired();
 
@@ -77,6 +102,36 @@ function Header({ user, handleLogout }: HeaderProps) {
     };
   }, [user, location.pathname]);
 
+  /*
+    소개 드롭다운은 기존 CSS hover만으로는 모바일 터치에서 안정적으로 열리지 않습니다.
+    그래서 클릭/터치 기반 상태를 추가하고, 바깥 영역을 누르면 닫히도록 처리합니다.
+  */
+  useEffect(() => {
+    const handlePointerDownOutside = (event: MouseEvent | TouchEvent) => {
+      if (
+        introDropdownRef.current &&
+        !introDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsIntroOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDownOutside);
+    document.addEventListener("touchstart", handlePointerDownOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDownOutside);
+      document.removeEventListener("touchstart", handlePointerDownOutside);
+    };
+  }, []);
+
+  /*
+    라우트가 바뀌면 열린 소개 드롭다운을 닫습니다.
+  */
+  useEffect(() => {
+    closeIntroDropdown();
+  }, [location.pathname]);
+
   return (
     <header className="header">
       <div className="header-inner">
@@ -85,8 +140,21 @@ function Header({ user, handleLogout }: HeaderProps) {
         </div>
 
         <nav className="header-left">
-          <div className="custom-dropdown">
-            <button type="button" className="header-button header-main-button">
+          <div
+            className={
+              isIntroOpen
+                ? "custom-dropdown custom-dropdown-open"
+                : "custom-dropdown"
+            }
+            ref={introDropdownRef}
+          >
+            <button
+              type="button"
+              className="header-button header-main-button"
+              onClick={toggleIntroDropdown}
+              aria-haspopup="menu"
+              aria-expanded={isIntroOpen}
+            >
               <span className="header-button-icon">▾</span>
               소개
             </button>
@@ -95,7 +163,7 @@ function Header({ user, handleLogout }: HeaderProps) {
               <button
                 type="button"
                 className="custom-dropdown-item"
-                onClick={() => navigate("/introduce")}
+                onClick={moveToIntroduce}
               >
                 <span>📘</span>
                 사이트 소개
@@ -104,7 +172,7 @@ function Header({ user, handleLogout }: HeaderProps) {
               <button
                 type="button"
                 className="custom-dropdown-item"
-                onClick={() => navigate("/introduce/howtouse")}
+                onClick={moveToHowToUse}
               >
                 <span>💡</span>
                 이용 방법
@@ -151,12 +219,11 @@ function Header({ user, handleLogout }: HeaderProps) {
                 type="button"
                 className="header-button header-user-button"
                 onClick={() => {
-     
-                    navigate("/members/mypage/learning");
+                  navigate("/members/mypage/learning");
                 }}
               >
                 <span className="header-user-avatar">♙</span>
-                          {user.name}님
+                {user.name}님
               </button>
 
               <button

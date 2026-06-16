@@ -99,6 +99,7 @@
   display: block;
   object-fit: contain;
 }
+
 .header-left {
   display: flex;
   align-items: center;
@@ -265,7 +266,12 @@
   height: 12px;
 }
 
-.custom-dropdown:hover .custom-dropdown-menu {
+/*
+  PC에서는 기존처럼 hover로 열리고,
+  모바일에서는 Header.tsx의 custom-dropdown-open 클래스로 터치 열림을 처리합니다.
+*/
+.custom-dropdown:hover .custom-dropdown-menu,
+.custom-dropdown.custom-dropdown-open .custom-dropdown-menu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -330,37 +336,108 @@
   }
 }
 
+/*
+  모바일 헤더 정리:
+  기존에는 .header-left가 order: 3 / width: 100%로 잡혀 있어서
+  소개 버튼이 강제로 다음 줄로 내려갔습니다.
+  여기서는 한 줄 배치를 유지하되, 아주 좁은 화면에서만 크기를 더 줄입니다.
+*/
 @media (max-width: 820px) {
   .header {
-    height: auto;
-    min-height: 90px;
-    padding: 14px 16px;
+    height: 76px;
+    min-height: 76px;
+    padding: 0 12px;
   }
 
   .header-inner {
-    flex-wrap: wrap;
-    align-content: center;
-    gap: 10px;
+    height: 100%;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-logo {
+    width: 126px;
+    height: 42px;
+    padding: 3px 8px;
+    flex-shrink: 0;
+  }
+
+  .header-logo img {
+    width: 124%;
+    height: 124%;
   }
 
   .header-left {
-    order: 3;
-    width: 100%;
-    flex: 1 0 100%;
-    overflow-x: auto;
-    padding-bottom: 2px;
-  }
-
-  .header-left::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  .header-left::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.34);
-    border-radius: 999px;
+    order: initial;
+    width: auto;
+    flex: 0 0 auto;
+    min-width: auto;
+    overflow: visible;
+    padding-bottom: 0;
+    gap: 6px;
   }
 
   .header-right {
     margin-left: auto;
+    flex-shrink: 0;
+    gap: 6px;
+  }
+
+  .header-button {
+    height: 40px;
+    padding: 0 12px;
+    font-size: 13px;
+    border-radius: 11px;
+  }
+
+  .header-main-button {
+    min-width: 76px;
+  }
+
+  .custom-dropdown-menu {
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 150px;
+  }
+}
+
+/*
+  아주 좁은 모바일 화면에서는 모든 버튼이 한 줄에 들어가도록
+  로고와 버튼 크기를 한 번 더 줄입니다.
+*/
+@media (max-width: 480px) {
+  .header {
+    height: 70px;
+    min-height: 70px;
+    padding: 0 10px;
+  }
+
+  .header-inner {
+    gap: 6px;
+  }
+
+  .header-logo {
+    width: 118px;
+    height: 40px;
+    padding: 3px 7px;
+  }
+
+  .header-button {
+    height: 38px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .header-main-button {
+    min-width: 68px;
+  }
+
+  .header-right {
+    gap: 5px;
+  }
+
+  .custom-dropdown-menu {
+    min-width: 144px;
   }
 }
