@@ -309,7 +309,7 @@ function LectureSidebar({
             </div>
                       <div className="sidebar-dom sidebar-footer">
                 <div className="lecture-sidebar-coming-soon">
-                    <p>📚 새로운 강의가 계속 추가될 예정입니다.</p>
+                    <p>📚 새로운 강의가 계속 추가될 예정입니다.📚</p>
                 </div>
 
                 {user?.role === "ADMIN" && (
