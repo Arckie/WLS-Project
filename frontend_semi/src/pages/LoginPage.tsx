@@ -27,7 +27,7 @@ function LoginPage({ handleLoginSuccess }: AppRoutesProps) {
 
     const handleLogin = async (event?: React.SyntheticEvent) => {
         event?.preventDefault(); // 새로고침 방지
-        console.log('로그인 시도중입니다.');
+     //   console.log('로그인 시도중입니다.');
 
         try {
             const url = "/api/members/login";
@@ -40,7 +40,7 @@ function LoginPage({ handleLoginSuccess }: AppRoutesProps) {
 
             const response = await customAxios.post<LoginResponse>(url, params, config);
 
-            console.log('응답 데이터 : \n' + response.data);
+        //    console.log('응답 데이터 : \n' + response.data);
 
             // 서버의 응답을 전개 연산자로 처리합니다.
             // accessToken는 JWT, userData는 User.ts으로 구성된 객체
@@ -51,7 +51,7 @@ function LoginPage({ handleLoginSuccess }: AppRoutesProps) {
             // 전개 연산자로 변수로 가져온 accessToken은 바로 넣을 수 있음
             localStorage.setItem("accessToken", accessToken);
 
-            console.log('로그인 성공 사용자 : ' + userData);
+     //       console.log('로그인 성공 사용자 : ' + userData);
 
             // 함수를 조건식에 넣는 것은 존재 유무를 판별하려고
             // (프롭스로 진짜 받아온 함수인가정도를 판단함)

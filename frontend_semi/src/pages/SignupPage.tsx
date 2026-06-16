@@ -119,7 +119,7 @@ function SignupPage(){
             setisIdDuplicate(false);
          }
          
-         console.log("아이디 중복 체크 완료 응답: ", response.data);
+ //        console.log("아이디 중복 체크 완료 응답: ", response.data);
     }
     //===================================================================================
     // 이름 제약조건을 주는 함수
@@ -146,17 +146,17 @@ function SignupPage(){
     }
     //===================================================================================
     // 정보가 제대로 프론트 콘솔에서 뜨는지 체크
-    const handleSignupCheck = () => {
+ //   const handleSignupCheck = () => {
 
-        console.log("로그인 ID : " + loginId);
-        console.log("비밀번호 : " + password);
-        console.log("이름 : " + name);
-        console.log("이메일 : " + fullEmail);
-        console.log("폰번호 : " + phone);
-        console.log("생년월일 : " + fullBirthDate);
-        console.log("관심학습 : " + sortedProfileIds);
+//        console.log("로그인 ID : " + loginId);
+//       console.log("비밀번호 : " + password);
+//        console.log("이름 : " + name);
+//        console.log("이메일 : " + fullEmail);
+//       console.log("폰번호 : " + phone);
+//       console.log("생년월일 : " + fullBirthDate);
+//       console.log("관심학습 : " + sortedProfileIds);
         
-    };
+//    };
     //===================================================================================
     const handleSignUp = async () => {
         try{
@@ -182,7 +182,7 @@ function SignupPage(){
             return;
         }
         if(!isIdDuplicate && loginId !== "" && isPasswordMatched && isPasswordValid && emailId !== ""){
-            const response = await customAxios.post("/api/members/signup",
+           await customAxios.post("/api/members/signup",
         {
             loginId: loginId,
             password: password,
@@ -197,7 +197,7 @@ function SignupPage(){
             "Content-Type": "application/json",
                 },
         });
-        console.log("가입 성공 응답 ", response.data);
+      //    console.log("가입 성공 응답 ", response.data);
         }   
         // 로그인 성 시 토큰과 회원번호, 이름을 사용자 저장소에 저장함.
             navigate("/signup/complete", {
@@ -490,9 +490,9 @@ function SignupPage(){
             이전
           </button>
 
-          <button className="signup-check-button" onClick={handleSignupCheck}>
+   {/*       <button className="signup-check-button" onClick={handleSignupCheck}>
             입력값 확인
-          </button>
+          </button> */}
 
           <button className="signup-submit-button" onClick={handleSignUp}>
             가입하기
