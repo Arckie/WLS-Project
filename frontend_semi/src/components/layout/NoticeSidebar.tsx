@@ -18,7 +18,7 @@ function NoticeSidebar({
     { noticeCategoryId: 1, categoryName: "공지" },
     { noticeCategoryId: 2, categoryName: "중요" },
     { noticeCategoryId: 3, categoryName: "업데이트" },
-    { noticeCategoryId: 4, categoryName: "안내" },
+    { noticeCategoryId: 4, categoryName: "자료실" },
   ];
 
   return (

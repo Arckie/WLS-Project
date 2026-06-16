@@ -324,7 +324,7 @@ function NoticeContents({ user }: AppRoutesProps) {
                     <option value={1}>공지</option>
                     <option value={2}>중요</option>
                     <option value={3}>업데이트</option>
-                    <option value={4}>안내</option>
+                    <option value={4}>자료실</option>
                   </select>
                 </label>
 

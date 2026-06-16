@@ -4,7 +4,7 @@ export const NOTICE_CATEGORY_NAME_MAP: Record<number, string> = {
   1: "공지",
   2: "중요",
   3: "업데이트",
-  4: "안내",
+  4: "자료실",
 };
 
 export const INITIAL_NOTICE_FORM_DATA: NoticeFormData = {
@@ -27,5 +27,5 @@ export const getNoticeCategoryDescription = (categoryId: number | null) => {
     return "풀스택 강의실의 전체 공지사항을 확인하세요.";
   }
 
-  return `${getNoticeCategoryTitle(categoryId)} 카테고리의 공지사항을 확인하세요.`;
+  return `${getNoticeCategoryTitle(categoryId)} 게시판입니다.`;
 };
