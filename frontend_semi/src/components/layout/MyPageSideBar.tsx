@@ -113,7 +113,7 @@ const bottomTitle = isAdmin
         )}
       </div>
   
-  //관리자 로그인시 문구 변경 
+  
       <div className="mypage-sidebar-guide">
         {isAdmin ?(
           <>
