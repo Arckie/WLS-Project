@@ -13,10 +13,10 @@ function MyPageSideBar({ user }: MyPageSideBarProps) {
 
     const isAdmin = user?.role === "ADMIN" || isAdminFromToken();
 
+    const isAdminPage = location.pathname === "/members/mypage/admin";
     const isMember = location.pathname === "/members/mypage";
     const isLearning = location.pathname === "/members/mypage/learning";
     const isFavorite = location.pathname === "/members/mypage/favorite";
-    const isAdminPage = location.pathname === "/admin";
 
     const bottomImage = isAdminPage
         ? "/mypage-admin.svg"

@@ -296,7 +296,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
             if (exist === true) {
                 alert("Passwordless 등록이 완료됐습니다!");
-                navigate("/");
+                navigate("/members/login/passwordlessSetting", { state: { mode: "login" } });
                 return;
             }
 
