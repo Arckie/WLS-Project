@@ -26,6 +26,12 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
     const [timeLeft, setTimeLeft] = useState(180);
     const [checkingResult, setCheckingResult] = useState(false);
 
+    /*
+     * 등록 완료 후 같은 화면에서 바로 로그인 플로우로 전환하기 위한 상태.
+     * mode는 여전히 setting이어도, 이 값이 true면 로그인 화면처럼 동작한다.
+     */
+    const [autoLoginAfterRegistration, setAutoLoginAfterRegistration] = useState(false);
+
     const resultStartedRef = useRef(false);
     const registrationStartedRef = useRef(false);
 
@@ -38,6 +44,17 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
     const location = useLocation();
 
     const mode = location.state?.mode ?? "login";
+
+    /*
+     * 로그인 플로우:
+     * - 원래 로그인 모드
+     * - 또는 등록 완료 후 자동 로그인 진행 중
+     *
+     * 등록 플로우:
+     * - setting 모드이면서 아직 자동 로그인으로 넘어가지 않은 상태
+     */
+    const isLoginFlow = mode === "login" || autoLoginAfterRegistration;
+    const isSettingFlow = mode === "setting" && !autoLoginAfterRegistration;
 
     const axiosConfig = {
         headers: {
@@ -92,6 +109,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         setErrors("");
         setStep("loading");
         resetWaitingFlags();
+        setAutoLoginAfterRegistration(false);
 
         console.log("===== Passwordless handleConfirm 실행 =====");
         console.log("mode =", mode);
@@ -162,7 +180,55 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
             setStep("input");
             setErrors(getErrorMessage(error));
             resetWaitingFlags();
+            setAutoLoginAfterRegistration(false);
         }
+    };
+
+    /*
+     * 등록 완료 후 자동 로그인 시작.
+     * registration-result에서 exist === true가 오면 이 함수가 실행된다.
+     */
+    const startLoginAfterRegistration = async (targetLoginId: string) => {
+        const random = makeId();
+        const newSessionId = makeId();
+
+        console.log("등록 완료 후 자동 로그인 시작");
+        console.log("userId =", targetLoginId);
+        console.log("random =", random);
+        console.log("sessionId =", newSessionId);
+
+        setAutoLoginAfterRegistration(true);
+        setSessionId(newSessionId);
+        setServicePassword("");
+        resultStartedRef.current = false;
+
+        /*
+         * Passwordless 서버가 등록 완료 직후 내부 상태 반영에 살짝 늦을 수 있어서
+         * 짧게 기다렸다가 로그인 요청을 시작한다.
+         */
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        const response = await axios.post(
+            `${API_BASE_URL}/api/passwordless/login-process`,
+            {
+                userId: targetLoginId,
+                random,
+                sessionId: newSessionId,
+            },
+            axiosConfig
+        );
+
+        console.log("등록 후 login-process 응답:", response.data);
+
+        const data = response.data?.data;
+
+        if (!data) {
+            throw new Error("Passwordless 로그인 응답 데이터가 비어 있습니다.");
+        }
+
+        setServicePassword(data.servicePassword ?? "");
+        setTimeLeft(180);
+        setStep("code");
     };
 
     const requestResult = async () => {
@@ -174,10 +240,11 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         if (isExpired) {
             alert("인증 시간이 만료됐습니다. 다시 시도해주세요.");
             setStep("input");
+            setAutoLoginAfterRegistration(false);
             return;
         }
 
-        if (mode !== "login") {
+        if (!isLoginFlow) {
             return;
         }
 
@@ -212,6 +279,10 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
             console.log("result 응답:", response.data);
 
+            /*
+             * 백엔드가 auth == Y일 때 MemberLoginResponseDto를 바로 반환하는 구조 기준.
+             * response.data.accessToken이 있으면 로그인 성공.
+             */
             const accessToken = response.data?.accessToken;
 
             if (accessToken) {
@@ -227,26 +298,33 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 return;
             }
 
+            /*
+             * auth == N/W 같은 Passwordless 원본 응답을 반환하는 경우.
+             */
             const auth = response.data?.data?.auth;
 
             if (auth === "N") {
                 alert("승인이 거부됐습니다. 다시 시도해주세요.");
                 setStep("input");
+                setAutoLoginAfterRegistration(false);
                 return;
             }
 
             if (auth === "W") {
                 alert("아직 승인 대기 중입니다. 다시 시도해주세요.");
                 setStep("input");
+                setAutoLoginAfterRegistration(false);
                 return;
             }
 
             alert("인증 상태를 확인할 수 없습니다. 다시 시도해주세요.");
             setStep("input");
+            setAutoLoginAfterRegistration(false);
         } catch (error: any) {
             console.error("Passwordless 결과 확인 실패:", error);
             alert(getErrorMessage(error));
             setStep("input");
+            setAutoLoginAfterRegistration(false);
         } finally {
             setCheckingResult(false);
         }
@@ -264,7 +342,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
             return;
         }
 
-        if (mode !== "setting") {
+        if (!isSettingFlow) {
             return;
         }
 
@@ -295,8 +373,15 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
             const exist = response.data?.data?.exist;
 
             if (exist === true) {
-                alert("Passwordless 등록이 완료됐습니다!");
-                navigate("/members/login/passwordlessSetting", { state: { mode: "login" } });
+                alert("Passwordless 등록이 완료됐습니다. 이어서 자동 로그인을 진행합니다.");
+
+                setQrDataUrl("");
+                setRegisterKey("");
+                setServerUrl("");
+                registrationStartedRef.current = false;
+                setCheckingResult(false);
+
+                await startLoginAfterRegistration(trimmedLoginId);
                 return;
             }
 
@@ -318,6 +403,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         setQrDataUrl("");
         setRegisterKey("");
         setServerUrl("");
+        setAutoLoginAfterRegistration(false);
         resetWaitingFlags();
         handleConfirm();
     };
@@ -334,12 +420,16 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         return () => clearInterval(timer);
     }, [step, timeLeft]);
 
+    /*
+     * 로그인 승인 대기.
+     * 일반 로그인 모드 또는 등록 후 자동 로그인 모드에서 작동한다.
+     */
     useEffect(() => {
         if (step !== "code") {
             return;
         }
 
-        if (mode !== "login") {
+        if (!isLoginFlow) {
             return;
         }
 
@@ -356,14 +446,18 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         }
 
         requestResult();
-    }, [step, mode, sessionId, servicePassword, isExpired]);
+    }, [step, isLoginFlow, sessionId, servicePassword, isExpired]);
 
+    /*
+     * 등록 완료 대기.
+     * setting 모드에서 QR이 발급된 뒤 작동한다.
+     */
     useEffect(() => {
         if (step !== "code") {
             return;
         }
 
-        if (mode !== "setting") {
+        if (!isSettingFlow) {
             return;
         }
 
@@ -376,7 +470,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         }
 
         requestRegistrationResult();
-    }, [step, mode, qrDataUrl, isExpired]);
+    }, [step, isSettingFlow, qrDataUrl, isExpired]);
 
     return (
         <div className="passwordless-page">
@@ -384,9 +478,11 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 <h1 className="passwordless-title">풀스택 강의실</h1>
 
                 <p className="passwordless-subtitle">
-                    {mode === "setting"
+                    {isSettingFlow
                         ? "Passwordless 앱 등록을 진행합니다."
-                        : "Passwordless 로그인을 진행합니다."}
+                        : autoLoginAfterRegistration
+                            ? "등록 완료 후 자동 로그인을 진행합니다."
+                            : "Passwordless 로그인을 진행합니다."}
                 </p>
 
                 <div className="passwordless-form">
@@ -463,11 +559,11 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
                     {step === "code" && (
                         <>
-                            {mode === "login" && (
+                            {isLoginFlow && (
                                 <div className="phone-icon-box">📱</div>
                             )}
 
-                            {mode === "setting" ? (
+                            {isSettingFlow ? (
                                 <>
                                     {qrDataUrl && (
                                         <div className="qr-container">
@@ -530,11 +626,11 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                                     className="auth-reissue-button"
                                     onClick={handleReissue}
                                 >
-                                    {mode === "setting" ? "등록 QR 재발급" : "인증번호 재발급"}
+                                    {isSettingFlow ? "등록 QR 재발급" : "인증번호 재발급"}
                                 </button>
                             )}
 
-                            {mode === "login" ? (
+                            {isLoginFlow ? (
                                 <button
                                     type="button"
                                     className="passwordless-button"
@@ -543,7 +639,9 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                                 >
                                     {checkingResult
                                         ? "앱 승인 대기 중..."
-                                        : "승인 확인 준비 중..."}
+                                        : autoLoginAfterRegistration
+                                            ? "자동 로그인 준비 중..."
+                                            : "승인 확인 준비 중..."}
                                 </button>
                             ) : (
                                 <button
@@ -563,6 +661,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                                 className="passwordless-cancel-button"
                                 onClick={() => {
                                     setStep("input");
+                                    setAutoLoginAfterRegistration(false);
                                     resetWaitingFlags();
                                 }}
                             >

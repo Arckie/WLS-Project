@@ -179,6 +179,7 @@ public class PasswordlessController {
         return passwordlessService.withdrawalAp(request);
     }
 
+    // 사용자가 멤버 페이지에서 해지를 시도하는 컨트롤러입니다.
     @PostMapping("/my-withdrawal")
     public ResponseEntity<?> withdrawalMyPasswordless(Authentication authentication) {
         if (authentication == null || authentication.getDetails() == null) {
@@ -187,10 +188,29 @@ public class PasswordlessController {
 
         String loginId = (String) authentication.getDetails();
 
-        IsApRequestDto request = new IsApRequestDto();
-        request.setUserId(loginId);
-        request.setServerKey(passwordlessProperties.getServerKey());
+        IsApRequestDto isApRequest = new IsApRequestDto();
+        isApRequest.setUserId(loginId);
+        isApRequest.setServerKey(passwordlessProperties.getServerKey());
 
-        return ResponseEntity.ok(passwordlessService.withdrawalAp(request));
+        PasswordlessApiResponse<IsApResponseDataDto> isApResponse =
+                passwordlessService.isAp(isApRequest);
+
+        if (
+                isApResponse == null ||
+                        isApResponse.getData() == null ||
+                        !isApResponse.getData().isExist()
+        ) {
+            return ResponseEntity.badRequest()
+                    .body("Passwordless 설정된 사용자가 아닙니다.");
+        }
+
+        IsApRequestDto withdrawalRequest = new IsApRequestDto();
+        withdrawalRequest.setUserId(loginId);
+        withdrawalRequest.setServerKey(passwordlessProperties.getServerKey());
+
+        CancelResponseDto withdrawalResponse =
+                passwordlessService.withdrawalAp(withdrawalRequest);
+
+        return ResponseEntity.ok(withdrawalResponse);
     }
 }
