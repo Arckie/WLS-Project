@@ -27,5 +27,5 @@ export const getNoticeCategoryDescription = (categoryId: number | null) => {
     return "풀스택 강의실의 전체 공지사항을 확인하세요.";
   }
 
-  return `${getNoticeCategoryTitle(categoryId)} 게시판입니다.`;
+  return `${getNoticeCategoryTitle(categoryId)} 공지사항 게시판입니다.`;
 };
