@@ -33,13 +33,42 @@ public class PasswordlessController {
     public ResponseEntity<?> registrationRequest(
             @RequestBody JoinApRequestDto request
     ) {
+        if (request.getUserId() == null || request.getUserId().isBlank()) {
+            return ResponseEntity.badRequest().body("아이디를 입력해 주세요.");
+        }
+
         if (!memberRepository.existsByLoginId(request.getUserId())) {
             return ResponseEntity.badRequest().body("존재하지 않는 아이디입니다.");
         }
 
         request.setServerKey(passwordlessProperties.getServerKey());
 
-        return ResponseEntity.ok(passwordlessService.JoinAp(request));
+        return ResponseEntity.ok(passwordlessService.joinAp(request));
+    }
+
+    /*
+     * Passwordless 앱 등록 완료를 기다리는 API입니다.
+     * 프론트는 join-ap로 QR을 받은 뒤 이 API를 한 번 호출합니다.
+     * 백엔드는 내부에서 isAp를 반복 조회하다가 exist == true가 되면 응답합니다.
+     */
+    @PostMapping("/registration-result")
+    public ResponseEntity<?> registrationResult(
+            @RequestBody IsApRequestDto request
+    ) {
+        if (request.getUserId() == null || request.getUserId().isBlank()) {
+            return ResponseEntity.badRequest().body("아이디가 없습니다.");
+        }
+
+        if (!memberRepository.existsByLoginId(request.getUserId())) {
+            return ResponseEntity.badRequest().body("존재하지 않는 아이디입니다.");
+        }
+
+        request.setServerKey(passwordlessProperties.getServerKey());
+
+        PasswordlessApiResponse<IsApResponseDataDto> response =
+                passwordlessService.waitRegistration(request);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login-process")
@@ -79,7 +108,7 @@ public class PasswordlessController {
         tokenRequest.setServerKey(passwordlessProperties.getServerKey());
 
         PasswordlessApiResponse<GetTokenForOneTimeResponseDto> tokenResponse =
-                passwordlessService.GetTokenForOneTimeDecrypto(tokenRequest);
+                passwordlessService.getTokenForOneTimeDecrypt(tokenRequest);
 
         if (tokenResponse.getData() == null || tokenResponse.getData().getToken() == null) {
             return ResponseEntity.internalServerError()
@@ -90,13 +119,17 @@ public class PasswordlessController {
         spRequest.setUserId(request.getUserId());
         spRequest.setToken(tokenResponse.getData().getToken());
 
-        // 중요: 프론트가 보낸 random/sessionId를 그대로 사용
+        /*
+         * 중요:
+         * 프론트가 생성해서 보낸 random/sessionId를 그대로 사용합니다.
+         * result 조회 때 같은 sessionId를 써야 합니다.
+         */
         spRequest.setRandom(request.getRandom());
         spRequest.setSessionId(request.getSessionId());
 
         spRequest.setServerKey(passwordlessProperties.getServerKey());
 
-        return ResponseEntity.ok(passwordlessService.GetSp(spRequest));
+        return ResponseEntity.ok(passwordlessService.getSp(spRequest));
     }
 
     @PostMapping("/result")
@@ -116,7 +149,10 @@ public class PasswordlessController {
 
         ResultResponseDto data = result.getData();
 
-        // 승인 완료면 여기서 바로 JWT 발급
+        /*
+         * 승인 완료면 여기서 우리 서비스 JWT를 발급합니다.
+         * 프론트가 result:true 같은 값을 보내서 로그인 성공 처리하는 구조가 아닙니다.
+         */
         if (data != null && "Y".equals(data.getAuth())) {
             MemberLoginResponseDto loginResponse =
                     memberService.passwordlessLogin(request.getUserId());
@@ -124,7 +160,6 @@ public class PasswordlessController {
             return ResponseEntity.ok(loginResponse);
         }
 
-        // 거절/대기/기타 상태는 원본 응답 반환
         return ResponseEntity.ok(result);
     }
 
@@ -133,7 +168,7 @@ public class PasswordlessController {
             @RequestBody CancelRequestDto request
     ) {
         request.setServerKey(passwordlessProperties.getServerKey());
-        return passwordlessService.Cancel(request);
+        return passwordlessService.cancel(request);
     }
 
     @PostMapping("/withdrawalAp")
@@ -141,7 +176,7 @@ public class PasswordlessController {
             @RequestBody IsApRequestDto request
     ) {
         request.setServerKey(passwordlessProperties.getServerKey());
-        return passwordlessService.WithdrawalAp(request);
+        return passwordlessService.withdrawalAp(request);
     }
 
     @PostMapping("/my-withdrawal")
@@ -156,6 +191,6 @@ public class PasswordlessController {
         request.setUserId(loginId);
         request.setServerKey(passwordlessProperties.getServerKey());
 
-        return ResponseEntity.ok(passwordlessService.WithdrawalAp(request));
+        return ResponseEntity.ok(passwordlessService.withdrawalAp(request));
     }
 }

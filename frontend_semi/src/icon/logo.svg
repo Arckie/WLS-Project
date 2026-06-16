@@ -1,26 +1,31 @@
-<svg width="220" height="72" viewBox="0 0 220 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="4" y="4" width="212" height="64" rx="14" fill="white"/>
-  <rect x="4" y="4" width="212" height="64" rx="14" stroke="#D8E7FF" stroke-width="2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 40" role="img" aria-label="풀스택 강의실">
+  <g transform="translate(7 6)">
+    <!-- stack layers -->
+    <path d="M12 20 L25 15 L38 20 L25 25 Z" fill="#FFFFFF" opacity="0.28"/>
+    <path d="M12 24 L25 19 L38 24 L25 29 Z" fill="#FFFFFF" opacity="0.5"/>
 
-  <rect x="16" y="16" width="188" height="40" rx="10" fill="url(#paint0_linear)"/>
+    <!-- outer monitor body -->
+    <rect x="2" y="0" width="34" height="22" rx="4.5" fill="#FFFFFF"/>
 
-  <text
-    x="110"
-    y="43"
-    text-anchor="middle"
-    fill="white"
-    font-family="Arial, 'Noto Sans KR', sans-serif"
-    font-size="25"
-    font-weight="900"
-    letter-spacing="-1"
-  >
+    <!-- inner monitor screen -->
+    <rect x="5" y="3" width="28" height="15" rx="2.8" fill="#2F80FF"/>
+
+    <!-- monitor stand -->
+    <rect x="15.5" y="21" width="7" height="4" rx="1" fill="#FFFFFF"/>
+    <rect x="10" y="25" width="18" height="3" rx="1.5" fill="#FFFFFF"/>
+
+    <!-- code mark -->
+    <path d="M14.5 8.1 L10.8 11 L14.5 13.9" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M23.5 8.1 L27.2 11 L23.5 13.9" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M21 7.6 L17 14.4" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+
+  <text x="50" y="25.6"
+        fill="#FFFFFF"
+        font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, Malgun Gothic, sans-serif"
+        font-size="16"
+        font-weight="800"
+        letter-spacing="-0.7">
     풀스택 강의실
   </text>
-
-  <defs>
-    <linearGradient id="paint0_linear" x1="16" y1="16" x2="204" y2="56" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2D8CFF"/>
-      <stop offset="1" stop-color="#005BD8"/>
-    </linearGradient>
-  </defs>
 </svg>

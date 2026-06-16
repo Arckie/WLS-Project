@@ -27,6 +27,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
     const [checkingResult, setCheckingResult] = useState(false);
 
     const resultStartedRef = useRef(false);
+    const registrationStartedRef = useRef(false);
 
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
@@ -72,6 +73,12 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         return "서버와 연결할 수 없습니다.";
     };
 
+    const resetWaitingFlags = () => {
+        setCheckingResult(false);
+        resultStartedRef.current = false;
+        registrationStartedRef.current = false;
+    };
+
     const handleConfirm = async (event?: React.SyntheticEvent) => {
         event?.preventDefault();
 
@@ -84,8 +91,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
         setErrors("");
         setStep("loading");
-        setCheckingResult(false);
-        resultStartedRef.current = false;
+        resetWaitingFlags();
 
         console.log("===== Passwordless handleConfirm 실행 =====");
         console.log("mode =", mode);
@@ -155,6 +161,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
             setStep("input");
             setErrors(getErrorMessage(error));
+            resetWaitingFlags();
         }
     };
 
@@ -205,10 +212,6 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
             console.log("result 응답:", response.data);
 
-            /*
-             * 백엔드가 auth == Y일 때 MemberLoginResponseDto를 바로 반환하는 구조 기준.
-             * 즉 response.data.accessToken이 있으면 로그인 성공.
-             */
             const accessToken = response.data?.accessToken;
 
             if (accessToken) {
@@ -219,13 +222,11 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                 if (handleLoginSuccess) {
                     handleLoginSuccess(userData);
                 }
+
                 navigate("/");
                 return;
             }
 
-            /*
-             * auth == N/W 같은 Passwordless 원본 응답을 반환하는 경우.
-             */
             const auth = response.data?.data?.auth;
 
             if (auth === "N") {
@@ -251,11 +252,73 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
         }
     };
 
+    const requestRegistrationResult = async () => {
+        if (registrationStartedRef.current) {
+            console.log("이미 등록 결과 대기 요청이 실행 중입니다.");
+            return;
+        }
+
+        if (isExpired) {
+            alert("등록 시간이 만료됐습니다. 다시 시도해주세요.");
+            setStep("input");
+            return;
+        }
+
+        if (mode !== "setting") {
+            return;
+        }
+
+        const trimmedLoginId = loginId.trim();
+
+        if (!trimmedLoginId) {
+            console.log("loginId가 비어 있습니다.");
+            return;
+        }
+
+        try {
+            registrationStartedRef.current = true;
+            setCheckingResult(true);
+
+            console.log("registration-result 자동 대기 요청 시작");
+            console.log("userId =", trimmedLoginId);
+
+            const response = await axios.post(
+                `${API_BASE_URL}/api/passwordless/registration-result`,
+                {
+                    userId: trimmedLoginId,
+                },
+                axiosConfig
+            );
+
+            console.log("registration-result 응답:", response.data);
+
+            const exist = response.data?.data?.exist;
+
+            if (exist === true) {
+                alert("Passwordless 등록이 완료됐습니다!");
+                navigate("/");
+                return;
+            }
+
+            alert("등록 상태를 확인할 수 없습니다. 다시 시도해주세요.");
+            setStep("input");
+        } catch (error: any) {
+            console.error("Passwordless 등록 결과 확인 실패:", error);
+            alert(getErrorMessage(error));
+            setStep("input");
+        } finally {
+            setCheckingResult(false);
+            registrationStartedRef.current = false;
+        }
+    };
+
     const handleReissue = () => {
         setServicePassword("");
         setSessionId("");
-        setCheckingResult(false);
-        resultStartedRef.current = false;
+        setQrDataUrl("");
+        setRegisterKey("");
+        setServerUrl("");
+        resetWaitingFlags();
         handleConfirm();
     };
 
@@ -294,6 +357,26 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
 
         requestResult();
     }, [step, mode, sessionId, servicePassword, isExpired]);
+
+    useEffect(() => {
+        if (step !== "code") {
+            return;
+        }
+
+        if (mode !== "setting") {
+            return;
+        }
+
+        if (!qrDataUrl) {
+            return;
+        }
+
+        if (isExpired) {
+            return;
+        }
+
+        requestRegistrationResult();
+    }, [step, mode, qrDataUrl, isExpired]);
 
     return (
         <div className="passwordless-page">
@@ -447,7 +530,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                                     className="auth-reissue-button"
                                     onClick={handleReissue}
                                 >
-                                    인증번호 재발급
+                                    {mode === "setting" ? "등록 QR 재발급" : "인증번호 재발급"}
                                 </button>
                             )}
 
@@ -466,18 +549,12 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                                 <button
                                     type="button"
                                     className="passwordless-button"
-                                    onClick={() => {
-                                        alert("Passwordless 등록이 완료됐습니다!");
-                                        navigate("/");
-                                    }}
-                                    disabled={isExpired}
-                                    style={
-                                        isExpired
-                                            ? { opacity: 0.5, cursor: "not-allowed" }
-                                            : {}
-                                    }
+                                    disabled
+                                    style={{ opacity: 0.7, cursor: "wait" }}
                                 >
-                                    확인
+                                    {checkingResult
+                                        ? "앱 등록 대기 중..."
+                                        : "등록 확인 준비 중..."}
                                 </button>
                             )}
 
@@ -486,8 +563,7 @@ function PasswordlessSetting({ handleLoginSuccess }: Props) {
                                 className="passwordless-cancel-button"
                                 onClick={() => {
                                     setStep("input");
-                                    setCheckingResult(false);
-                                    resultStartedRef.current = false;
+                                    resetWaitingFlags();
                                 }}
                             >
                                 취소
