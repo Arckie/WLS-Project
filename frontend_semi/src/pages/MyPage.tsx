@@ -2,7 +2,6 @@ import MyPageSideBar from "../components/layout/MyPageSideBar";
 import { LEARNING_PROFILE_OPTIONS } from "../constants/memberProfile";
 import { useMyPage } from "../hooks/useMyPage";
 import "./MyPage.css";
-import { API_BASE_URL } from "../config/config";
 import customAxios from "../api/axiosInstance";
 
 type AppRoutesProps = {
