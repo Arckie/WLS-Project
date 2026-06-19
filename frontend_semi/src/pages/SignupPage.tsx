@@ -162,7 +162,7 @@ function SignupPage(){
         try{
         // 비밀번호 일치여부 확인
         if(isIdDuplicate){
-            alert("증복된 아이디입니다.");
+            alert("중복된 아이디입니다.");
             return;
         }
         if(loginId.trim() == ""){

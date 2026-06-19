@@ -3,10 +3,12 @@ package com.backend_semi.admin.service;
 import com.backend_semi.admin.dto.AdminMemberResponse;
 import com.backend_semi.admin.dto.AdminStatusResponse;
 import com.backend_semi.constant.Role;
-import com.backend_semi.controller.MemberController;
 import com.backend_semi.entity.Member;
+import com.backend_semi.repository.FavoriteRepository;
+import com.backend_semi.repository.LectureProgressRepository;
 import com.backend_semi.repository.LectureRepository;
 import com.backend_semi.repository.MemberRepository;
+import com.backend_semi.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,10 @@ public class AdminMemberService {
 
     private final MemberRepository memberRepository;
     private final LectureRepository lectureRepository;
+
+    private final FavoriteRepository favoriteRepository;
+    private final LectureProgressRepository lectureProgressRepository;
+    private final NoticeRepository noticeRepository;
 
     // 관리자 통계 조회 처리
 
@@ -105,8 +110,10 @@ public class AdminMemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
 
+        favoriteRepository.deleteByMember(member);
+        lectureProgressRepository.deleteByMember(member);
+        noticeRepository.deleteByMember(member);
         memberRepository.delete(member);
-
     }
 
 }

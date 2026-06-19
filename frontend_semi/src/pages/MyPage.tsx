@@ -1,9 +1,9 @@
 import MyPageSideBar from "../components/layout/MyPageSideBar";
 import { LEARNING_PROFILE_OPTIONS } from "../constants/memberProfile";
 import { useMyPage } from "../hooks/useMyPage";
-import axios from "axios";
 import "./MyPage.css";
 import { API_BASE_URL } from "../config/config";
+import customAxios from "../api/axiosInstance";
 
 type AppRoutesProps = {
     handleLogout: (event?: React.MouseEvent<HTMLElement>) => void;
@@ -70,7 +70,7 @@ function MyPage({ handleLogout }: AppRoutesProps) {
                 return;
             }
 
-            await axios.post(
+            await customAxios.post(
                 `${API_BASE_URL}/api/passwordless/my-withdrawal`,
                 {},
                 {
