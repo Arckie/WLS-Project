@@ -71,7 +71,7 @@ function MyPage({ handleLogout }: AppRoutesProps) {
             }
 
             await customAxios.post(
-                `${API_BASE_URL}/api/passwordless/my-withdrawal`,
+                `/api/passwordless/my-withdrawal`,
                 {},
                 {
                     headers: {
