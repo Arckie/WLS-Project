@@ -42,29 +42,30 @@ function LectureContent({
     setActiveTab("code");
   }, [currentLecture?.id]);
 
-  const handleCopy = async (text?: string) => {
+  const fallbackCopy = (text: string) => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.cssText = "position:fixed;top:0;left:0;opacity:0;";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    const success = document.execCommand("copy");
+    document.body.removeChild(textArea);
+    alert(success ? "복사되었습니다." : "복사에 실패했습니다.");
+  };
+
+  const handleCopy = (text?: string) => {
     if (!text) {
       alert("복사할 내용이 없습니다.");
       return;
     }
 
-    try {
-      await navigator.clipboard.writeText(text);
-      alert("복사되었습니다.");
-    } catch {
-      // HTTP 환경 등 Clipboard API 미지원 시 fallback
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      textArea.style.cssText = "position:fixed;opacity:0;pointer-events:none;";
-      document.body.appendChild(textArea);
-      textArea.select();
-      try {
-        document.execCommand("copy");
-        alert("복사되었습니다.");
-      } catch {
-        alert("복사에 실패했습니다.");
-      }
-      document.body.removeChild(textArea);
+    if (window.isSecureContext && navigator.clipboard) {
+      navigator.clipboard.writeText(text)
+        .then(() => alert("복사되었습니다."))
+        .catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
     }
   };
 
