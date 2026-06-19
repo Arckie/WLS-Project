@@ -42,14 +42,30 @@ function LectureContent({
     setActiveTab("code");
   }, [currentLecture?.id]);
 
-  const handleCopy = (text?: string) => {
+  const handleCopy = async (text?: string) => {
     if (!text) {
       alert("복사할 내용이 없습니다.");
       return;
     }
 
-    navigator.clipboard.writeText(text);
-    alert("복사되었습니다!");
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("복사되었습니다.");
+    } catch {
+      // HTTP 환경 등 Clipboard API 미지원 시 fallback
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.cssText = "position:fixed;opacity:0;pointer-events:none;";
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand("copy");
+        alert("복사되었습니다.");
+      } catch {
+        alert("복사에 실패했습니다.");
+      }
+      document.body.removeChild(textArea);
+    }
   };
 
   if (!currentLecture) {
